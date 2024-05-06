@@ -1,6 +1,6 @@
 import express from 'express';
+import cors from 'cors';
 const app = express();
 app.use(express.json());
-console.log('你安装成功哩QQ');
+app.use(cors());
 export default app;
-
