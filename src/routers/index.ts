@@ -1,13 +1,12 @@
 import { Router } from 'express';
 import passport from '../config/passport';
+import generateJWT from '../middlewares/generateJWT';
 const router = Router();
 
 router.post(
   '/login',
   passport.authenticate('local', { session: false }),
-  (req, res) => {
-    res.json(req.user);
-  },
+  generateJWT,
 );
 
 router.get(

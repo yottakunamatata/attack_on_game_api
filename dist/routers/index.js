@@ -7,13 +7,12 @@ var __importDefault =
 Object.defineProperty(exports, '__esModule', { value: true });
 const express_1 = require('express');
 const passport_1 = __importDefault(require('../config/passport'));
+const generateJWT_1 = __importDefault(require('../middlewares/generateJWT'));
 const router = (0, express_1.Router)();
 router.post(
   '/login',
   passport_1.default.authenticate('local', { session: false }),
-  (req, res) => {
-    res.json(req.user);
-  },
+  generateJWT_1.default,
 );
 router.get(
   '/profile',

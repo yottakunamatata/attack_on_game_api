@@ -1,6 +1,11 @@
 import passport from 'passport';
 import { Strategy as LoacalStrategy } from 'passport-local';
-import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
+import {
+  Strategy as JwtStrategy,
+  ExtractJwt,
+  StrategyOptionsWithRequest,
+} from 'passport-jwt';
+
 import User from '../models/User';
 import { config } from 'dotenv';
 config();
@@ -29,10 +34,12 @@ passport.use(
 );
 
 // JWT Strategy
-const jwtOptions = {
+const jwtOptions: StrategyOptionsWithRequest = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-  secretOrKey: process.env.JWT_SECRET,
+  secretOrKey: process.env.JWT_SECRET!,
+  passReqToCallback: true,
 };
+
 passport.use(
   new JwtStrategy(jwtOptions, async (payload, done) => {
     try {
