@@ -2,13 +2,6 @@ import mongoose from 'mongoose';
 import { config } from 'dotenv';
 config();
 const { dbUserName, dbPassword, dbName } = process.env;
-console.log(
-  'dbUserName, dbPassword, dbName : ',
-  dbUserName,
-  dbPassword,
-  dbName,
-);
-
 const uri = `mongodb+srv://${dbUserName}:${dbPassword}@cluster0.4va9e.mongodb.net/${dbName}`;
 
 async function connectDB() {

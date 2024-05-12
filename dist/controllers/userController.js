@@ -38,19 +38,14 @@ var __importDefault =
     return mod && mod.__esModule ? mod : { default: mod };
   };
 Object.defineProperty(exports, '__esModule', { value: true });
-const mongoose_1 = __importDefault(require('mongoose'));
-const dotenv_1 = require('dotenv');
-(0, dotenv_1.config)();
-const { dbUserName, dbPassword, dbName } = process.env;
-const uri = `mongodb+srv://${dbUserName}:${dbPassword}@cluster0.4va9e.mongodb.net/${dbName}`;
-function connectDB() {
-  return __awaiter(this, void 0, void 0, function* () {
-    try {
-      yield mongoose_1.default.connect(uri);
-      console.log('Connected to the database');
-    } catch (error) {
-      console.log('Error connecting to the database', error);
-    }
-  });
-}
-exports.default = connectDB;
+const User_1 = __importDefault(require('../models/User'));
+const userController = {
+  create(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+      const { name, email, password } = req.body;
+      const user = yield User_1.default.create({ name, email, password });
+      res.status(200).json({ status: true, data: user });
+    });
+  },
+};
+exports.default = userController;
