@@ -69,7 +69,7 @@ passport_1.default.use(
 const jwtOptions = {
   jwtFromRequest: passport_jwt_1.ExtractJwt.fromAuthHeaderAsBearerToken(),
   secretOrKey: process.env.JWT_SECRET,
-  passReqToCallback: true,
+  passReqToCallback: false,
 };
 passport_1.default.use(
   new passport_jwt_1.Strategy(jwtOptions, (payload, done) =>

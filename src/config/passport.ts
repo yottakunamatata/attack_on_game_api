@@ -3,7 +3,7 @@ import { Strategy as LoacalStrategy } from 'passport-local';
 import {
   Strategy as JwtStrategy,
   ExtractJwt,
-  StrategyOptionsWithRequest,
+  StrategyOptionsWithoutRequest,
 } from 'passport-jwt';
 
 import User from '../models/User';
@@ -34,10 +34,10 @@ passport.use(
 );
 
 // JWT Strategy
-const jwtOptions: StrategyOptionsWithRequest = {
+const jwtOptions: StrategyOptionsWithoutRequest = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
   secretOrKey: process.env.JWT_SECRET!,
-  passReqToCallback: true,
+  passReqToCallback: false,
 };
 
 passport.use(
