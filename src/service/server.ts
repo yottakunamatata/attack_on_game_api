@@ -7,7 +7,7 @@ const PORT = process.env.PORT || 3000;
 
 connectDB().then(() => {
   app.use(passport.initialize());
-  app.use('/api', Router);
+  app.use('/api/v1', Router);
 
   app.listen(PORT, () => {
     console.log(`你現在收看的是http://localhost:${PORT}`);

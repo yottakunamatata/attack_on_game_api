@@ -19,7 +19,7 @@ const localAuthenticator = (
 const jwtAuthenticator = (req: Request, res: Response, next: NextFunction) => {
   passport.authenticate('jwt', { session: false }, (err, user) => {
     if (err || !user) {
-      res.status(401).json({ status: false, message: 'No user found' });
+      res.status(401).json({ status: false, message: 'It is wrong token ' });
       return;
     }
     req.user = user;

@@ -19,6 +19,20 @@ const userController = {
       next(error);
     }
   },
+  async updated(req: Request, res: Response, next: NextFunction) {
+    const { name } = req.body;
+    try {
+      const user = await User.findById(req.params.id);
+      if (!user) {
+        res.status(404).json({ status: false, message: 'User not found' });
+        return;
+      }
+      await User.findByIdAndUpdate(req.params.id, { name });
+      res.status(200).json({ status: true, message: 'User updated' });
+    } catch (error) {
+      next(error);
+    }
+  },
 };
 
 export default userController;

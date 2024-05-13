@@ -21,7 +21,7 @@ exports.localAuthenticator = localAuthenticator;
 const jwtAuthenticator = (req, res, next) => {
   passport_1.default.authenticate('jwt', { session: false }, (err, user) => {
     if (err || !user) {
-      res.status(401).json({ status: false, message: 'No user found' });
+      res.status(401).json({ status: false, message: 'It is wrong token ' });
       return;
     }
     req.user = user;
