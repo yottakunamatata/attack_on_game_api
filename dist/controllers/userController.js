@@ -77,5 +77,19 @@ const userController = {
       }
     });
   },
+  getById(req, res, next) {
+    return __awaiter(this, void 0, void 0, function* () {
+      try {
+        const user = yield User_1.default.findById(req.params.id);
+        if (!user) {
+          res.status(404).json({ status: false, message: 'User not found' });
+          return;
+        }
+        res.status(200).json({ status: true, data: user });
+      } catch (error) {
+        next(error);
+      }
+    });
+  },
 };
 exports.default = userController;

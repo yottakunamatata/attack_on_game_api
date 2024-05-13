@@ -33,6 +33,18 @@ const userController = {
       next(error);
     }
   },
+  async getById(req: Request, res: Response, next: NextFunction) {
+    try {
+      const user = await User.findById(req.params.id);
+      if (!user) {
+        res.status(404).json({ status: false, message: 'User not found' });
+        return;
+      }
+      res.status(200).json({ status: true, data: user });
+    } catch (error) {
+      next(error);
+    }
+  },
 };
 
 export default userController;

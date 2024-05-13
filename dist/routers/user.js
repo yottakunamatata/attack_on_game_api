@@ -13,4 +13,5 @@ const auth_1 = require('../middlewares/auth');
 const router = (0, express_1.Router)();
 router.post('/', userController_1.default.create);
 router.put('/:id', auth_1.jwtAuthenticator, userController_1.default.updated);
+router.get('/:id', auth_1.jwtAuthenticator, userController_1.default.getById);
 exports.default = router;
