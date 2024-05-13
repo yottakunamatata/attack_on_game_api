@@ -39,12 +39,26 @@ var __importDefault =
   };
 Object.defineProperty(exports, '__esModule', { value: true });
 const User_1 = __importDefault(require('../models/User'));
+const bcrypt_1 = require('bcrypt');
 const userController = {
-  create(req, res) {
+  create(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
       const { name, email, password } = req.body;
-      const user = yield User_1.default.create({ name, email, password });
-      res.status(200).json({ status: true, data: user });
+      try {
+        // Check if the user already exists
+        const userExists = yield User_1.default.findOne({ email });
+        if (userExists) {
+          res
+            .status(409)
+            .json({ status: false, message: 'User already exists' });
+          return;
+        }
+        const hashedPassword = yield (0, bcrypt_1.hash)(password, 10);
+        yield User_1.default.create({ name, email, password: hashedPassword });
+        res.status(200).json({ status: true, menubar: 'User created' });
+      } catch (error) {
+        next(error);
+      }
     });
   },
 };

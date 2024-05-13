@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response, NextFunction, ErrorRequestHandler } from 'express';
 import jwt from 'jsonwebtoken';
 
 interface User {
@@ -7,7 +7,13 @@ interface User {
   email: string;
 }
 
-const generateJWT = (req: Request<User>, res: Response, next: NextFunction) => {
+const generateJWT = (
+  error: ErrorRequestHandler,
+  req: Request<User>,
+  res: Response,
+  next: NextFunction,
+) => {
+  console.log('error', error);
   const { user } = req;
   if (!user) {
     res.status(401).json({ status: false, message: 'No user found' });

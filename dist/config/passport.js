@@ -42,6 +42,7 @@ const passport_1 = __importDefault(require('passport'));
 const passport_local_1 = require('passport-local');
 const passport_jwt_1 = require('passport-jwt');
 const User_1 = __importDefault(require('../models/User'));
+const bcrypt_1 = require('bcrypt');
 const dotenv_1 = require('dotenv');
 (0, dotenv_1.config)();
 // Loacl Strategy
@@ -57,6 +58,10 @@ passport_1.default.use(
           const user = yield User_1.default.findOne({ email });
           if (!user) {
             return done(null, false, { message: 'User not found' });
+          }
+          const isMatch = yield (0, bcrypt_1.compare)(password, user.password);
+          if (!isMatch) {
+            return done(null, false, { message: 'Incorrect password' });
           }
           return done(null, user);
         } catch (error) {

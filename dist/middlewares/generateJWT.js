@@ -6,7 +6,8 @@ var __importDefault =
   };
 Object.defineProperty(exports, '__esModule', { value: true });
 const jsonwebtoken_1 = __importDefault(require('jsonwebtoken'));
-const generateJWT = (req, res, next) => {
+const generateJWT = (error, req, res, next) => {
+  console.log('error', error);
   const { user } = req;
   if (!user) {
     res.status(401).json({ status: false, message: 'No user found' });

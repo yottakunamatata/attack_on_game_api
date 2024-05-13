@@ -7,6 +7,7 @@ import {
 } from 'passport-jwt';
 
 import User from '../models/User';
+import { compare } from 'bcrypt';
 import { config } from 'dotenv';
 config();
 
@@ -24,7 +25,11 @@ passport.use(
         if (!user) {
           return done(null, false, { message: 'User not found' });
         }
+        const isMatch = await compare(password, user.password);
 
+        if (!isMatch) {
+          return done(null, false, { message: 'Incorrect password' });
+        }
         return done(null, user);
       } catch (error) {
         return done(error);
