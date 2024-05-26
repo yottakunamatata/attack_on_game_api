@@ -15,24 +15,33 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.updatePlayer = exports.getPlayer = exports.createPlayer = void 0;
 const Player_1 = __importDefault(require("../models/Player"));
 const User_1 = __importDefault(require("../models/User"));
+const express_validator_1 = require("express-validator");
+const help_1 = require("../utils/help");
 // create player
 const createPlayer = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { name, user, phone, avatar, preferGame } = req.body;
+        // check for validation errors
+        const errors = (0, express_validator_1.validationResult)(req);
+        if (!errors.isEmpty()) {
+            console.log(errors.array());
+            return res.status(400).json({ status: false, message: errors.array()[0].msg });
+        }
+        const { name, phone, avatar, preferGame } = req.body;
+        const user = (0, help_1.getUser)(req);
         // check if the user exists
         const userExists = yield User_1.default.findById(user);
         if (!userExists) {
-            return res.status(404).json({ error: 'User not found' });
+            return res.status(404).json({ status: false, message: 'User not found' });
         }
         // check if the player exists
         const playerExists = yield Player_1.default
             .findOne({ user });
         if (playerExists) {
-            return res.status(409).json({ error: 'Player already exists' });
+            return res.status(409).json({ status: false, message: 'Player already exists' });
         }
         const player = yield Player_1.default.create({
             name,
-            user,
+            user: user._id,
             phone,
             avatar,
             preferGame,
@@ -47,15 +56,21 @@ exports.createPlayer = createPlayer;
 // get player by id
 const getPlayer = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const player = yield Player_1.default.findById(req.params.id);
+        //check for validation errors
+        const errors = (0, express_validator_1.validationResult)(req);
+        if (!errors.isEmpty()) {
+            console.log(errors.array());
+            return res.status(400).json({ status: false, message: errors.array()[0].msg });
+        }
+        const player = yield Player_1.default.findOne({ user: req.params.id });
         // check if the player exists
         if (!player) {
-            return res.status(404).json({ error: 'Player not found' });
+            return res.status(404).json({ status: false, message: 'Player not found' });
         }
         res.status(200).json(player);
     }
     catch (error) {
-        res.status(500).json({ error: error });
+        res.status(500).json({ status: false, message: error });
     }
 });
 exports.getPlayer = getPlayer;
