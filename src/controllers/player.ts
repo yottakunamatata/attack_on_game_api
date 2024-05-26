@@ -69,9 +69,19 @@ export const getPlayer = async (req: Request, res: Response) => {
 // update player
 export const updatePlayer = async (req: Request, res: Response) => {
     try {
-        const player = await Player.findByIdAndUpdate(req.params.id
-            , req.body
-            , { new: true });
+        // check for validation errors
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            console.log(errors.array());
+            return res.status(400).json({ status: false, message: errors.array()[0].msg });
+        }
+        // udpate player
+        const player = await Player.findOneAndUpdate(
+            { user: req.params.id },
+            req.body,
+            { new: true }
+        );
+
         res.status(200).json(player);
     } catch (error) {
         res.status(500).json({ error: error });

@@ -7,8 +7,8 @@ import { createPlayerValidator, updatePlayerValidator } from '../validator/playe
 const router = Router();
 
 router.post('/', jwtAuthenticator, createPlayerValidator, createPlayer);
-router.get('/:id', jwtAuthenticator, updatePlayerValidator, getPlayer);
-router.put('/:id', jwtAuthenticator, updatePlayer);
+router.get('/:id', jwtAuthenticator, getPlayer);
+router.put('/:id', jwtAuthenticator, updatePlayerValidator, updatePlayer);
 
 
 export default router;

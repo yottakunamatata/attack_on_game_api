@@ -77,7 +77,14 @@ exports.getPlayer = getPlayer;
 // update player
 const updatePlayer = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const player = yield Player_1.default.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        // check for validation errors
+        const errors = (0, express_validator_1.validationResult)(req);
+        if (!errors.isEmpty()) {
+            console.log(errors.array());
+            return res.status(400).json({ status: false, message: errors.array()[0].msg });
+        }
+        // udpate player
+        const player = yield Player_1.default.findOneAndUpdate({ user: req.params.id }, req.body, { new: true });
         res.status(200).json(player);
     }
     catch (error) {
