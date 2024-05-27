@@ -6,9 +6,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.localAuthenticator = exports.jwtAuthenticator = void 0;
 const passport_1 = __importDefault(require("../config/passport"));
 const localAuthenticator = (req, res, next) => {
-    passport_1.default.authenticate('local', { session: false }, (err, user) => {
+    passport_1.default.authenticate('local', { session: false }, (err, user, info) => {
         if (err || !user) {
-            res.status(401).json({ status: false, message: 'No user found' });
+            res.status(401).json({ status: false, message: info.message });
             return;
         }
         req.user = user;
