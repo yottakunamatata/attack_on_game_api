@@ -2,6 +2,12 @@ import passport from '../config/passport';
 import { Request, Response, NextFunction } from 'express';
 import { IUser } from '../models/User';
 import { RequestWithUser } from '../types/commonRequest';
+
+
+interface AuthInfo {
+  message: string;
+}
+
 const localAuthenticator = (
   req: Request,
   res: Response,
@@ -10,9 +16,9 @@ const localAuthenticator = (
   passport.authenticate(
     'local',
     { session: false },
-    (err: Error, user: IUser) => {
+    (err: Error, user: IUser, info: AuthInfo) => {
       if (err || !user) {
-        res.status(401).json({ status: false, message: 'No user found' });
+        res.status(401).json({ status: false, message: info.message });
         return;
       }
       (req as RequestWithUser).user = user;
