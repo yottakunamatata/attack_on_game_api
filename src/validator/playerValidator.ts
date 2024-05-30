@@ -12,7 +12,7 @@ export const createPlayerValidator = [
         .isString()
         .withMessage('Phone must be a string')
         .custom((value) => {
-            if (!value.match(/^[0-9]{2}-[0-9]{8,9}$/)) {
+            if (!value.match(/^0[0-9]{9}$/)) {
                 throw new Error('Invalid phone number');
             }
             return true;
@@ -42,7 +42,7 @@ export const updatePlayerValidator = [
         .isString()
         .withMessage('Phone must be a string')
         .custom((value) => {
-            if (!value.match(/^[0-9]{2}-[0-9]{8,9}$/)) {
+            if (!value.match(/^0[0-9]{9}$/)) {
                 throw new Error('Invalid phone number');
             }
             return true;
