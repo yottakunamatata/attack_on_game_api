@@ -3,7 +3,7 @@ import { createPlayer, getPlayer, updatePlayer } from '../controllers/player';
 import {
   createPlayerValidator,
   updatePlayerValidator,
-} from '../validator/playerValidator';
+} from '../validators/playerValidator';
 
 const router = Router();
 
