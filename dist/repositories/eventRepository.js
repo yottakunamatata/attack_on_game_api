@@ -15,29 +15,26 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.EventRepository = void 0;
 const EventModel_1 = __importDefault(require("@/models/EventModel"));
 const EventQuery_1 = require("@/queries/EventQuery");
-const eventRequest_1 = require("@/enums/eventRequest");
 class EventRepository {
-    constructor() {
-        this.defaultLimit = eventRequest_1.DefaultQuery.LIMIT;
-        this.defaultSkip = eventRequest_1.DefaultQuery.SKIP;
-    }
     createEvent(content) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const event = new EventModel_1.default(content);
                 yield event.save();
-                return true;
+                return { success: true };
             }
             catch (error) {
-                return false;
+                return { success: false, error };
             }
         });
     }
-    updatedEvent(id, content) {
+    updateEvent(id, content) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                yield EventModel_1.default.findOneAndUpdate({ _id: id }, {
+                const updatedData = yield EventModel_1.default.findOneAndUpdate({ _id: id }, {
                     title: content.title,
+                    description: content.description,
+                    isFoodAllowed: content.isFoodAllowed,
                     address: content.address,
                     eventStartTime: content.eventStartTime,
                     eventEndTime: content.eventEndTime,
@@ -49,64 +46,79 @@ class EventRepository {
                     participationFee: content.participationFee,
                     eventImageUrl: content.eventImageUrl,
                     updatedAt: content.updatedAt,
-                });
-                return true;
+                }, { new: true })
+                    .lean()
+                    .exec(); // 使用 lean() 來提高查詢效能，並將結果轉為純 JavaScript 對象
+                if (!updatedData) {
+                    return { success: false, error: 'Event not found', data: null };
+                }
+                return { success: true, data: updatedData };
             }
             catch (error) {
-                return false;
+                return { success: false, error };
             }
         });
     }
     getEventById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const event = yield EventModel_1.default.findById(id);
-            return event;
+            try {
+                const event = yield EventModel_1.default.findById(id);
+                return { success: true, data: event };
+            }
+            catch (error) {
+                return { success: false, error };
+            }
         });
     }
-    getAllEvents(req) {
+    getAllEvents(queryParams) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { truthLimit, truthSkip, truthFormationStatus, truthRegistrationStatus, } = this.parseQueryParams(req);
-            const eventQuery = new EventQuery_1.EventQuery(req.query, {
-                forStatus: truthFormationStatus,
-                regStatus: truthRegistrationStatus,
-            });
-            const query = eventQuery.buildEventQuery();
-            return this._getEventsData(query, truthSkip, truthLimit);
+            try {
+                const { limit, skip, formationStatus, registrationStatus, sortBy, sortOrder, } = queryParams;
+                const eventQuery = new EventQuery_1.EventQuery({}, {
+                    forStatus: formationStatus,
+                    regStatus: registrationStatus,
+                });
+                const query = eventQuery.buildEventQuery();
+                const events = yield this._getEventsData(query, skip, limit, sortBy, sortOrder);
+                return { success: true, data: events };
+            }
+            catch (error) {
+                return { success: false, error };
+            }
         });
     }
-    getEventsByStoreId(storeId, req) {
+    getEventsByStoreId(storeId, queryParams) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { truthLimit, truthSkip, truthFormationStatus, truthRegistrationStatus, } = this.parseQueryParams(req);
-            const eventQuery = new EventQuery_1.EventQuery(Object.assign({ storeId }, req.query), {
-                forStatus: truthFormationStatus,
-                regStatus: truthRegistrationStatus,
-            });
-            const query = eventQuery.buildEventQuery();
-            return this._getEventsData(query, truthSkip, truthLimit);
+            try {
+                const { limit, skip, formationStatus, registrationStatus, sortBy, sortOrder, } = queryParams;
+                const eventQuery = new EventQuery_1.EventQuery({ storeId }, {
+                    forStatus: formationStatus,
+                    regStatus: registrationStatus,
+                });
+                const query = eventQuery.buildEventQuery();
+                const events = yield this._getEventsData(query, skip, limit, sortBy, sortOrder);
+                return { success: true, data: events };
+            }
+            catch (error) {
+                return { success: false, error };
+            }
         });
     }
-    _getEventsData(eventQuery, skip, limit) {
+    _getEventsData(eventQuery, skip, limit, sortBy, sortOrder) {
         return __awaiter(this, void 0, void 0, function* () {
-            const eventData = yield EventModel_1.default.find(eventQuery)
-                .skip(skip)
-                .limit(limit)
-                .sort({ eventStartTime: 1 })
-                .exec();
-            return eventData || [];
+            try {
+                const sortOptions = { [sortBy]: sortOrder };
+                const eventData = yield EventModel_1.default.find(eventQuery)
+                    .skip(skip)
+                    .limit(limit)
+                    .sort(sortOptions)
+                    .exec();
+                return eventData || [];
+            }
+            catch (error) {
+                return [];
+            }
         });
-    }
-    parseQueryParams(req) {
-        const { limit = eventRequest_1.DefaultQuery.LIMIT, skip = eventRequest_1.DefaultQuery.SKIP, formationStatus = eventRequest_1.DefaultQuery.FOR_STATUS, registrationStatus = eventRequest_1.DefaultQuery.REG_STATUS, } = req.query || {};
-        const truthLimit = Math.min(Number(limit), eventRequest_1.DefaultQuery.MAX_LIMIT);
-        const truthSkip = Number(skip);
-        const truthFormationStatus = Number(formationStatus);
-        const truthRegistrationStatus = Number(registrationStatus);
-        return {
-            truthLimit,
-            truthSkip,
-            truthFormationStatus,
-            truthRegistrationStatus,
-        };
     }
 }
 exports.EventRepository = EventRepository;

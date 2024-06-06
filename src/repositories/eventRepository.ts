@@ -1,32 +1,33 @@
 import EventModel from '@/models/EventModel';
 import { EventDTO } from '@/dto/event/eventDTO';
 import { IEvent } from '@/interfaces/EventInterface';
-import { Request } from 'express';
 import { EventQuery } from '@/queries/EventQuery';
-import { DefaultQuery } from '@/enums/eventRequest';
+import { QueryParams } from '@/services/eventQueryParams';
+import { SortOrder } from 'mongoose';
 export class EventRepository {
-  private readonly defaultLimit: number;
-  private readonly defaultSkip: number;
-
-  constructor() {
-    this.defaultLimit = DefaultQuery.LIMIT;
-    this.defaultSkip = DefaultQuery.SKIP;
-  }
-  public async createEvent(content: Partial<EventDTO>): Promise<boolean> {
+  public async createEvent(
+    content: Partial<EventDTO>,
+  ): Promise<{ success: boolean; error?: any }> {
     try {
       const event = new EventModel(content);
       await event.save();
-      return true;
+      return { success: true };
     } catch (error) {
-      return false;
+      return { success: false, error };
     }
   }
-  public async updatedEvent(id: string, content: EventDTO): Promise<boolean> {
+
+  public async updateEvent(
+    id: string,
+    content: EventDTO,
+  ): Promise<{ success: boolean; data?: IEvent | null; error?: any }> {
     try {
-      await EventModel.findOneAndUpdate(
+      const updatedData = await EventModel.findOneAndUpdate(
         { _id: id },
         {
           title: content.title,
+          description: content.description,
+          isFoodAllowed: content.isFoodAllowed,
           address: content.address,
           eventStartTime: content.eventStartTime,
           eventEndTime: content.eventEndTime,
@@ -39,80 +40,116 @@ export class EventRepository {
           eventImageUrl: content.eventImageUrl,
           updatedAt: content.updatedAt,
         },
-      );
-      return true;
+        { new: true },
+      )
+        .lean()
+        .exec(); // 使用 lean() 來提高查詢效能，並將結果轉為純 JavaScript 對象
+
+      if (!updatedData) {
+        return { success: false, error: 'Event not found', data: null };
+      }
+
+      return { success: true, data: updatedData as IEvent };
     } catch (error) {
-      return false;
+      return { success: false, error };
     }
   }
-  public async getEventById(id: string): Promise<IEvent | null> {
-    const event = await EventModel.findById(id);
-    return event;
+
+  public async getEventById(
+    id: string,
+  ): Promise<{ success: boolean; error?: any; data?: IEvent | null }> {
+    try {
+      const event = await EventModel.findById(id);
+      return { success: true, data: event };
+    } catch (error) {
+      return { success: false, error };
+    }
   }
-  public async getAllEvents(req: Request): Promise<IEvent[]> {
-    const {
-      truthLimit,
-      truthSkip,
-      truthFormationStatus,
-      truthRegistrationStatus,
-    } = this.parseQueryParams(req);
-    const eventQuery = new EventQuery(req.query, {
-      forStatus: truthFormationStatus,
-      regStatus: truthRegistrationStatus,
-    });
-    const query = eventQuery.buildEventQuery();
-    return this._getEventsData(query, truthSkip, truthLimit);
+
+  public async getAllEvents(
+    queryParams: QueryParams,
+  ): Promise<{ success: boolean; error?: any; data?: IEvent[] | null }> {
+    try {
+      const {
+        limit,
+        skip,
+        formationStatus,
+        registrationStatus,
+        sortBy,
+        sortOrder,
+      } = queryParams;
+      const eventQuery = new EventQuery(
+        {},
+        {
+          forStatus: formationStatus,
+          regStatus: registrationStatus,
+        },
+      );
+      const query = eventQuery.buildEventQuery();
+      const events = await this._getEventsData(
+        query,
+        skip,
+        limit,
+        sortBy,
+        sortOrder,
+      );
+      return { success: true, data: events };
+    } catch (error) {
+      return { success: false, error };
+    }
   }
+
   public async getEventsByStoreId(
     storeId: string,
-    req: Request,
-  ): Promise<IEvent[]> {
-    const {
-      truthLimit,
-      truthSkip,
-      truthFormationStatus,
-      truthRegistrationStatus,
-    } = this.parseQueryParams(req);
-    const eventQuery = new EventQuery(
-      { storeId, ...req.query },
-      {
-        forStatus: truthFormationStatus,
-        regStatus: truthRegistrationStatus,
-      },
-    );
-    const query = eventQuery.buildEventQuery();
-    return this._getEventsData(query, truthSkip, truthLimit);
+    queryParams: QueryParams,
+  ): Promise<{ success: boolean; error?: any; data?: IEvent[] | null }> {
+    try {
+      const {
+        limit,
+        skip,
+        formationStatus,
+        registrationStatus,
+        sortBy,
+        sortOrder,
+      } = queryParams;
+      const eventQuery = new EventQuery(
+        { storeId },
+        {
+          forStatus: formationStatus,
+          regStatus: registrationStatus,
+        },
+      );
+      const query = eventQuery.buildEventQuery();
+      const events = await this._getEventsData(
+        query,
+        skip,
+        limit,
+        sortBy,
+        sortOrder,
+      );
+      return { success: true, data: events };
+    } catch (error) {
+      return { success: false, error };
+    }
   }
+
   private async _getEventsData(
     eventQuery: any,
     skip: number,
     limit: number,
+    sortBy: string,
+    sortOrder: SortOrder,
   ): Promise<IEvent[]> {
-    const eventData = await EventModel.find(eventQuery)
-      .skip(skip)
-      .limit(limit)
-      .sort({ eventStartTime: 1 })
-      .exec();
-    return eventData || [];
-  }
-  private parseQueryParams(req: Request) {
-    const {
-      limit = DefaultQuery.LIMIT,
-      skip = DefaultQuery.SKIP,
-      formationStatus = DefaultQuery.FOR_STATUS,
-      registrationStatus = DefaultQuery.REG_STATUS,
-    } = req.query || {};
-
-    const truthLimit = Math.min(Number(limit), DefaultQuery.MAX_LIMIT);
-    const truthSkip = Number(skip);
-    const truthFormationStatus = Number(formationStatus);
-    const truthRegistrationStatus = Number(registrationStatus);
-
-    return {
-      truthLimit,
-      truthSkip,
-      truthFormationStatus,
-      truthRegistrationStatus,
-    };
+    try {
+      const sortOptions: { [key: string]: SortOrder } = { [sortBy]: sortOrder };
+      const eventData = await EventModel.find(eventQuery)
+        .skip(skip)
+        .limit(limit)
+        .sort(sortOptions)
+        .exec();
+      return eventData || [];
+    } catch (error) {
+      return [];
+    }
   }
 }
