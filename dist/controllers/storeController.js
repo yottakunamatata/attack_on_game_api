@@ -8,35 +8,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteStore = exports.updateStore = exports.getStoreById = exports.getStores = exports.createStore = void 0;
 const express_validator_1 = require("express-validator");
-const User_1 = require("@/models/User");
+const User_1 = __importDefault(require("@/models/User"));
 const Store_1 = require("@/models/Store");
-// Create a new store (假資料)
-// export const createStore = async (
-//   req: Request,
-//   res: Response,
-// ): Promise<void> => {
-//   try {
-//     const newUser = await User.create({
-//       email: '123@123.com',
-//       password: '13234dd',
-//       role: UserRole.STORE,
-//     });
-//     const newStore = await Store.create({
-//       name: '狼人殺',
-//       user: newUser._id,
-//       avatar: 'iamavatar.png',
-//       introduce: '狼人殺愛我',
-//       address: '忠孝東路三段',
-//       phone: '123-434',
-//     });
-//     res.status(201).send(newStore);
-//   } catch (error) {
-//     res.status(500).send(error);
-//   }
-// };
 // Create a new store
 const createStore = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     // check validation result
@@ -46,20 +25,20 @@ const createStore = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         return;
     }
     try {
-        const { name, userId, phone, avatar, address, introduce } = req.body;
+        const { name, user, phone, avatar, address, introduce } = req.body;
         // check if user exist
-        const userExists = yield User_1.User.findById(userId);
+        const userExists = yield User_1.default.findById(user);
         if (!userExists) {
             return res.status(404).send({ message: 'User not found' });
         }
         // check if the store exist
-        const storeExist = yield Store_1.Store.findOne({ user: userId });
+        const storeExist = yield Store_1.Store.findOne({ user: user });
         if (storeExist) {
             return res.status(409).send({ message: 'Store already Exist!' });
         }
         const store = yield Store_1.Store.create({
             name,
-            userId,
+            user,
             avatar,
             introduce,
             address,

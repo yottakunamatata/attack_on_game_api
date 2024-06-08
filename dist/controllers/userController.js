@@ -8,8 +8,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const User_1 = require("../models/User");
+const User_1 = __importDefault(require("../models/User"));
 const bcrypt_1 = require("bcrypt");
 const express_validator_1 = require("express-validator");
 const userController = {
@@ -24,13 +27,13 @@ const userController = {
                 }
                 const { role, email, password } = req.body;
                 // Check if the user already exists
-                const userExists = yield User_1.User.findOne({ email });
+                const userExists = yield User_1.default.findOne({ email });
                 if (userExists) {
                     res.status(409).json({ status: false, message: 'User already exists' });
                     return;
                 }
                 const hashedPassword = yield (0, bcrypt_1.hash)(password, 10);
-                yield User_1.User.create({ role, email, password: hashedPassword });
+                yield User_1.default.create({ role, email, password: hashedPassword });
                 res.status(200).json({ status: true, menubar: 'User created' });
             }
             catch (error) {
@@ -48,12 +51,12 @@ const userController = {
                     return;
                 }
                 const { password } = req.body;
-                const user = yield User_1.User.findById(req.params.id);
+                const user = yield User_1.default.findById(req.params.id);
                 if (!user) {
                     res.status(404).json({ status: false, message: 'User not found' });
                     return;
                 }
-                yield User_1.User.findByIdAndUpdate(req.params.id, { password });
+                yield User_1.default.findByIdAndUpdate(req.params.id, { password });
                 res.status(200).json({ status: true, message: 'User updated' });
             }
             catch (error) {
@@ -64,7 +67,7 @@ const userController = {
     getById(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const user = yield User_1.User.findById(req.params.id, { password: 0 });
+                const user = yield User_1.default.findById(req.params.id, { password: 0 });
                 if (!user) {
                     res.status(404).json({ status: false, message: 'User not found' });
                     return;

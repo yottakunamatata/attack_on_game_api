@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const passport_1 = __importDefault(require("passport"));
 const passport_local_1 = require("passport-local");
 const passport_jwt_1 = require("passport-jwt");
-const User_1 = require("../models/User");
+const User_1 = __importDefault(require("../models/User"));
 const bcrypt_1 = require("bcrypt");
 const dotenv_1 = require("dotenv");
 (0, dotenv_1.config)();
@@ -25,7 +25,7 @@ passport_1.default.use(new passport_local_1.Strategy({
     passwordField: 'password',
 }, (email, password, done) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const user = yield User_1.User.findOne({ email });
+        const user = yield User_1.default.findOne({ email });
         if (!user) {
             return done(null, false, { message: 'User not found' });
         }
@@ -47,7 +47,7 @@ const jwtOptions = {
 };
 passport_1.default.use(new passport_jwt_1.Strategy(jwtOptions, (payload, done) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const user = yield User_1.User.findById(payload.id);
+        const user = yield User_1.default.findById(payload.id);
         if (!user) {
             return done(null, false);
         }

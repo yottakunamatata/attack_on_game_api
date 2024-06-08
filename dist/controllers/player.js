@@ -14,7 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.updatePlayer = exports.getPlayer = exports.createPlayer = void 0;
 const Player_1 = __importDefault(require("../models/Player"));
-const User_1 = require("../models/User");
+const User_1 = __importDefault(require("../models/User"));
 const express_validator_1 = require("express-validator");
 const help_1 = require("../utils/help");
 // create player
@@ -37,7 +37,7 @@ const createPlayer = (req, res) => __awaiter(void 0, void 0, void 0, function* (
                 .json({ status: false, message: 'You are not an player' });
         }
         // check if the user exists
-        const userExists = yield User_1.User.findById(userId);
+        const userExists = yield User_1.default.findById(userId);
         if (!userExists) {
             return res.status(404).json({ status: false, message: 'User not found' });
         }
