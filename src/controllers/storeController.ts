@@ -1,35 +1,77 @@
 import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
-import { User } from '../models/User';
-import { Store } from '../models/Store';
-import { UserRole } from '../models/User';
+import { User } from '@/models/User';
+import { Store } from '@/models/Store';
+import { UserRole } from '@/models/User';
+import { getUser } from '@/utils/help';
 
 // Create a new store (假資料)
-export const createStore = async (
-  req: Request,
-  res: Response,
-): Promise<void> => {
-  try {
-    const newUser = await User.create({
-      email: '123@123.com',
-      password: '13234dd',
-      role: UserRole.STORE,
-    });
+// export const createStore = async (
+//   req: Request,
+//   res: Response,
+// ): Promise<void> => {
+//   try {
+//     const newUser = await User.create({
+//       email: '123@123.com',
+//       password: '13234dd',
+//       role: UserRole.STORE,
+//     });
 
-    const newStore = await Store.create({
-      name: '風聲鶴唳',
-      user: newUser._id,
-      avatar: 'iamavatar.png',
-      introduce: '風聲好好玩',
-      address: '王國之心二路',
-      phone: '123-434',
-    });
+//     const newStore = await Store.create({
+//       name: '狼人殺',
+//       user: newUser._id,
+//       avatar: 'iamavatar.png',
+//       introduce: '狼人殺愛我',
+//       address: '忠孝東路三段',
+//       phone: '123-434',
+//     });
 
-    res.status(201).send(newStore);
-  } catch (error) {
-    res.status(500).send(error);
+//     res.status(201).send(newStore);
+//   } catch (error) {
+//     res.status(500).send(error);
+//   }
+// };
+
+// Create a new store
+export const createStore = async (req: Request, res: Response) => {
+  // check validation result
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    res.status(400).json(errors);
+    return;
   }
-};
+  try {
+    const { name, userId, phone, avatar, address, introduce } = req.body
+    // check if user exist
+    const userExists = await User.findById(userId)
+    if (!userExists) {
+      return res.status(404).send({ message: 'User not found' })
+    }
+    // check if the store exist
+    const storeExist = await Store.findOne({ user: userId })
+    if (storeExist) {
+      return res.status(409).send({ message: 'Store already Exist!' })
+    }
+
+    const store = await Store.create({
+      name,
+      userId,
+      avatar,
+      introduce,
+      address,
+      phone
+    })
+    res.status(201).send({ message: 'Store created successfully!!', store });
+    console.log({ message: 'Store created successfully!!', store })
+
+  } catch (error) {
+    console.error('Error creating store', error);
+    res.status(500).send({ message: 'Error creating store', error });
+  }
+
+
+}
+
 
 // Read all stores
 export const getStores = async (req: Request, res: Response): Promise<void> => {

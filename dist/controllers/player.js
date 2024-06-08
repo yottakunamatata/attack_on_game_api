@@ -14,7 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.updatePlayer = exports.getPlayer = exports.createPlayer = void 0;
 const Player_1 = __importDefault(require("../models/Player"));
-const User_1 = __importDefault(require("../models/User"));
+const User_1 = require("../models/User");
 const express_validator_1 = require("express-validator");
 const help_1 = require("../utils/help");
 // create player
@@ -23,20 +23,11 @@ const createPlayer = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         // check for validation errors
         const errors = (0, express_validator_1.validationResult)(req);
         if (!errors.isEmpty()) {
-<<<<<<< HEAD
-            console.log(errors.array());
-=======
->>>>>>> 9c0ef4d91614811860ae2341df7b19239d8f626e
             return res
                 .status(400)
                 .json({ status: false, message: errors.array()[0].msg });
         }
         const { name, phone, avatar, preferGame } = req.body;
-<<<<<<< HEAD
-        const user = (0, help_1.getUser)(req);
-        // check if the user exists
-        const userExists = yield User_1.default.findById(user);
-=======
         const userId = (0, help_1.getUser)(req)._id;
         const role = (0, help_1.getUser)(req).role;
         // check if the user is an player
@@ -46,17 +37,12 @@ const createPlayer = (req, res) => __awaiter(void 0, void 0, void 0, function* (
                 .json({ status: false, message: 'You are not an player' });
         }
         // check if the user exists
-        const userExists = yield User_1.default.findById(userId);
->>>>>>> 9c0ef4d91614811860ae2341df7b19239d8f626e
+        const userExists = yield User_1.User.findById(userId);
         if (!userExists) {
             return res.status(404).json({ status: false, message: 'User not found' });
         }
         // check if the player exists
-<<<<<<< HEAD
-        const playerExists = yield Player_1.default.findOne({ user });
-=======
         const playerExists = yield Player_1.default.findOne({ user: userId });
->>>>>>> 9c0ef4d91614811860ae2341df7b19239d8f626e
         if (playerExists) {
             return res
                 .status(409)
@@ -64,11 +50,7 @@ const createPlayer = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         }
         yield Player_1.default.create({
             name,
-<<<<<<< HEAD
-            user: user._id,
-=======
             user: userId,
->>>>>>> 9c0ef4d91614811860ae2341df7b19239d8f626e
             phone,
             avatar,
             preferGame,
@@ -76,15 +58,11 @@ const createPlayer = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         res.status(201).json({ status: true, message: 'Player created' });
     }
     catch (error) {
-<<<<<<< HEAD
-        res.status(500).json({ error: error });
-=======
         res.status(500).json({
             status: false,
             message: "It's has some error when created player data ",
             error: error,
         });
->>>>>>> 9c0ef4d91614811860ae2341df7b19239d8f626e
     }
 });
 exports.createPlayer = createPlayer;
@@ -94,10 +72,6 @@ const getPlayer = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         //check for validation errors
         const errors = (0, express_validator_1.validationResult)(req);
         if (!errors.isEmpty()) {
-<<<<<<< HEAD
-            console.log(errors.array());
-=======
->>>>>>> 9c0ef4d91614811860ae2341df7b19239d8f626e
             return res
                 .status(400)
                 .json({ status: false, message: errors.array()[0].msg });
@@ -122,10 +96,6 @@ const updatePlayer = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         // check for validation errors
         const errors = (0, express_validator_1.validationResult)(req);
         if (!errors.isEmpty()) {
-<<<<<<< HEAD
-            console.log(errors.array());
-=======
->>>>>>> 9c0ef4d91614811860ae2341df7b19239d8f626e
             return res
                 .status(400)
                 .json({ status: false, message: errors.array()[0].msg });
@@ -141,7 +111,4 @@ const updatePlayer = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     }
 });
 exports.updatePlayer = updatePlayer;
-<<<<<<< HEAD
-=======
 //# sourceMappingURL=player.js.map
->>>>>>> 9c0ef4d91614811860ae2341df7b19239d8f626e

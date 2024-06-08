@@ -23,7 +23,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UserRole = void 0;
+exports.User = exports.UserRole = void 0;
 const mongoose_1 = __importStar(require("mongoose"));
 var UserRole;
 (function (UserRole) {
@@ -43,5 +43,5 @@ UserSchema.pre('save', function (next) {
     this.updatedAt = new Date();
     next();
 });
-const User = mongoose_1.default.model('User', UserSchema);
-exports.default = User;
+exports.User = mongoose_1.default.model('User', UserSchema);
+//# sourceMappingURL=User.js.map

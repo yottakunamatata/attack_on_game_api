@@ -20,4 +20,4 @@ router.patch('/v1/store/:id', (0, validateFileds_1.validateFileds)(storeValidato
 // DELETE - 刪除單一店家資料
 router.delete('/v1/store/:id', storeController_1.deleteStore);
 exports.default = router;
-//# sourceMappingURL=storeRouter.js.map
+//# sourceMappingURL=store.js.map

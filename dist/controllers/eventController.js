@@ -9,16 +9,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-<<<<<<< HEAD
-const EventController = {
-    createEvent(req, res) {
-        return __awaiter(this, void 0, void 0, function* () {
-            console.log('create event', req, res);
-        });
-    },
-};
-exports.default = EventController;
-=======
 exports.EventController = exports.EventMessages = void 0;
 const eventService_1 = require("@/services/eventService");
 const baseController_1 = require("@/controllers/baseController");
@@ -61,4 +51,3 @@ class EventController extends baseController_1.BaseController {
 }
 exports.EventController = EventController;
 //# sourceMappingURL=eventController.js.map
->>>>>>> 9c0ef4d91614811860ae2341df7b19239d8f626e

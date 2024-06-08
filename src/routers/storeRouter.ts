@@ -12,24 +12,19 @@ import {
 
 const router = express.Router();
 
-// create店家資料(假資料)
-router.post('/createStrore', createStore);
+// 待更新
+router.post('/', createStore);
 
-// GET - 獲取所有店家資料
-router.get('/v1/stores', getStores);
-
-// GET - 獲取單一店家資料
-router.get('/v1/store/:id', getStoreById);
-
-// PATCH - 修改店家資料(含驗證)
+router.get('/', getStores);
+router.get('/:id', getStoreById);
 router.patch(
-  '/v1/store/:id',
+  '/:id',
   validateFileds(allowedFileds),
   storValidationRule,
   updateStore,
 );
 
-// DELETE - 刪除單一店家資料
-router.delete('/v1/store/:id', deleteStore);
+// 待更新
+router.delete('/:id', deleteStore);
 
 export default router;
