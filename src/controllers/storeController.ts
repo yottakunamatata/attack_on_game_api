@@ -77,7 +77,7 @@ export const getStoreById = async (
       res.status(404).send({ message: 'Store not found!' });
       return;
     }
-    res.status(200).send({ store });
+    res.status(200).send({ status: true, data: store });
   } catch (error) {
     console.error('Error fetching store', error);
     res.status(500).send({ message: 'Error fetching store', error });
@@ -111,7 +111,7 @@ export const updateStore = async (
     Object.assign(store, updateData);
     await store.save({ validateBeforeSave: true });
 
-    res.status(200).send(store);
+    res.status(200).send({ status: true, message: "店家", store });
   } catch (error) {
     console.error('Error updating store', error);
     res.status(500).send({ message: 'Error updating store', error });

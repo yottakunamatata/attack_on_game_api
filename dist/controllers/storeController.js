@@ -83,7 +83,7 @@ const getStoreById = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             res.status(404).send({ message: 'Store not found!' });
             return;
         }
-        res.status(200).send({ store });
+        res.status(200).send({ status: true, data: store });
     }
     catch (error) {
         console.error('Error fetching store', error);
@@ -110,7 +110,7 @@ const updateStore = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         }
         Object.assign(store, updateData);
         yield store.save({ validateBeforeSave: true });
-        res.status(200).send(store);
+        res.status(200).send({ status: true, message: "店家", store });
     }
     catch (error) {
         console.error('Error updating store', error);
