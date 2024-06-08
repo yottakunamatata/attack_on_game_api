@@ -23,25 +23,19 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UserRole = void 0;
 const mongoose_1 = __importStar(require("mongoose"));
-var UserRole;
-(function (UserRole) {
-    UserRole["PLAYER"] = "player";
-    UserRole["STORE"] = "store";
-})(UserRole || (exports.UserRole = UserRole = {}));
-const UserSchema = new mongoose_1.Schema({
-    email: { type: String, required: true },
-    password: { type: String, required: true },
-    role: { type: String, enum: Object.values(UserRole), required: true },
-    emailCode: { type: String, default: '' },
-    createdAt: { type: Date, required: true, default: Date.now },
-    updatedAt: { type: Date, required: true, default: Date.now },
+const PlayerSchema = new mongoose_1.Schema({
+    name: { type: String, required: true },
+    user: {
+        type: mongoose_1.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true,
+    },
+    phone: { type: String, required: true },
+    avatar: { type: String, required: true },
+    preferGame: {
+        type: [String],
+        required: true
+    }
 });
-// Add updatedAt field before saving
-UserSchema.pre('save', function (next) {
-    this.updatedAt = new Date();
-    next();
-});
-const User = mongoose_1.default.model('User', UserSchema);
-exports.default = User;
+exports.default = mongoose_1.default.model('Player', PlayerSchema);
