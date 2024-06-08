@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
 import User from '@/models/User';
-import { Store } from '@/models/Store';
+import { Store } from '../models/Store';
 import { UserRole } from '@/models/User';
 import { getUser } from '@/utils/help';
 
@@ -25,6 +25,11 @@ export const createStore = async (req: Request, res: Response) => {
     if (storeExist) {
       return res.status(409).send({ message: 'Store already Exist!' })
     }
+    // check if role of user is "store"
+    const userRole = await User.findById(user)
+    if (userRole?.role !== "store") {
+      return res.status(404).send({ message: 'The role of user is not store!' })
+    }
 
     const store = await Store.create({
       name,
@@ -34,15 +39,13 @@ export const createStore = async (req: Request, res: Response) => {
       address,
       phone
     })
-    res.status(201).send({ message: 'Store created successfully!!', store });
-    console.log({ message: 'Store created successfully!!', store })
+    res.status(201).send({ success: true, message: '註冊成功', store });
+    // console.log({ message: 'Store created successfully!!', store })
 
   } catch (error) {
     console.error('Error creating store', error);
     res.status(500).send({ message: 'Error creating store', error });
   }
-
-
 }
 
 
@@ -50,7 +53,7 @@ export const createStore = async (req: Request, res: Response) => {
 export const getStores = async (req: Request, res: Response): Promise<void> => {
   try {
     const stores = await Store.find();
-    res.status(200).send(stores);
+    res.status(200).send({ success: true, message: "店家列表取得成功", data: stores });
   } catch (error) {
     console.error('Error fetching stores', error);
     res.status(500).send({
@@ -115,20 +118,3 @@ export const updateStore = async (
   }
 };
 
-// Delete store
-export const deleteStore = async (
-  req: Request,
-  res: Response,
-): Promise<void> => {
-  try {
-    const store = await Store.findById(req.params.id);
-    if (!store) {
-      res.status(404).send({ message: 'Store not found.' });
-      return;
-    }
-    await store.deleteOne();
-    res.status(200).send({ message: 'Store deleted successfully!', store });
-  } catch (error) {
-    res.status(500).send({ message: 'Error deleting store', error });
-  }
-};

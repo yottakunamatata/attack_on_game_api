@@ -6,8 +6,7 @@ import {
   createStore,
   getStores,
   getStoreById,
-  updateStore,
-  deleteStore,
+  updateStore
 } from '../controllers/storeController';
 
 const router = express.Router();
@@ -24,7 +23,6 @@ router.patch(
   updateStore,
 );
 
-// 待更新
-router.delete('/:id', deleteStore);
+
 
 export default router;
