@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
-import { User } from '@/models/User';
+import User from '@/models/User';
 import { Store } from '@/models/Store';
 import { UserRole } from '@/models/User';
 import { getUser } from '@/utils/help';
