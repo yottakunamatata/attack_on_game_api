@@ -35,7 +35,15 @@ const PlayerSchema = new mongoose_1.Schema({
     avatar: { type: String, required: true },
     preferGame: {
         type: [String],
+<<<<<<< HEAD
         required: true
     }
 });
 exports.default = mongoose_1.default.model('Player', PlayerSchema);
+=======
+        required: true,
+    },
+});
+exports.default = mongoose_1.default.model('Player', PlayerSchema);
+//# sourceMappingURL=Player.js.map
+>>>>>>> 9c0ef4d91614811860ae2341df7b19239d8f626e

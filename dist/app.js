@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 'use strict';
 var __importDefault =
   (this && this.__importDefault) ||
@@ -40,4 +41,20 @@ app.use(express_1.default.json());
 app.use((0, cors_1.default)());
 app.use((0, cors_1.default)());
 >>>>>>> de76f4dfb689dc96a81221a2a27bc71c0e13fcba
+=======
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = __importDefault(require("express"));
+const cors_1 = __importDefault(require("cors"));
+require("module-alias/register");
+const app = (0, express_1.default)();
+app.use(express_1.default.json());
+app.use((0, cors_1.default)());
+app.use((0, cors_1.default)());
+>>>>>>> 9c0ef4d91614811860ae2341df7b19239d8f626e
 exports.default = app;
+//TODO:自動更新 MongoDB 的 IP 白名單設置
+//# sourceMappingURL=app.js.map

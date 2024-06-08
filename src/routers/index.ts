@@ -2,13 +2,13 @@ import { Router } from 'express';
 import generateJWT from '../middlewares/generateJWT';
 import { jwtAuthenticator, localAuthenticator } from '../middlewares/auth';
 import UserRouter from '@/routers/user';
-import EventRouter from '@/routers/event';
+import EventRouter from '@/routers/eventRouter';
+import PlayerRouter from '@/routers/player';
 const router = Router();
 
 router.use('/user', UserRouter);
+router.use('/player', jwtAuthenticator, PlayerRouter);
 router.post('/login', localAuthenticator, generateJWT);
 router.use('/event', EventRouter);
-router.get('/profile', jwtAuthenticator, (req, res) => {
-  res.status(200).json({ user: req.user });
-});
+
 export default router;

@@ -1,4 +1,4 @@
-import mongoose, { Document, Schema } from 'mongoose';
+import mongoose, { Document, Schema, model } from 'mongoose';
 
 export enum UserRole {
   PLAYER = 'player',
@@ -29,6 +29,4 @@ UserSchema.pre('save', function (next) {
   next();
 });
 
-const User = mongoose.model<IUser>('User', UserSchema);
-
-export default User;
+export const User = mongoose.model<IUser>('User', UserSchema);

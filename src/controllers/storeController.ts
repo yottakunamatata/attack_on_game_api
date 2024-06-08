@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
-import { User } from '../models/user';
-import { Store } from '../models/store';
-import { UserRole } from '../models/user';
+import { User } from '../models/User';
+import { Store } from '../models/Store';
+import { UserRole } from '../models/User';
 
 // Create a new store (假資料)
 export const createStore = async (

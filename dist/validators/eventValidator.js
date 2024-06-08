@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+<<<<<<< HEAD
 const express_validator_1 = require("express-validator");
 const allowedParams = [
     'storeId',
@@ -114,3 +115,20 @@ body('isPublish')
     .isInt({ min: 0 })
     .withMessage('當前參與人數必須是一個非負整數哦！'),
 */
+=======
+exports.EventValidator = void 0;
+const validationConfig_1 = require("@/config/validationConfig");
+class EventValidator {
+    static validateEvent() {
+        return Object.values(validationConfig_1.validationConfig.body).flat();
+    }
+    static validateEventQuery() {
+        return Object.values(validationConfig_1.validationConfig.query).flat();
+    }
+    static validateObjectIds(parameters) {
+        return validationConfig_1.validationConfig.param[parameters];
+    }
+}
+exports.EventValidator = EventValidator;
+//# sourceMappingURL=eventValidator.js.map
+>>>>>>> 9c0ef4d91614811860ae2341df7b19239d8f626e
