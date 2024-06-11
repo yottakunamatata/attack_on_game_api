@@ -6,7 +6,7 @@ import {
   createStore,
   getStores,
   getStoreById,
-  updateStore
+  updateStore,
 } from '../controllers/storeController';
 
 const router = express.Router();
@@ -22,7 +22,5 @@ router.patch(
   storValidationRule,
   updateStore,
 );
-
-
 
 export default router;

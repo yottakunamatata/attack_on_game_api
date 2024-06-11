@@ -14,46 +14,49 @@ export const createStore = async (req: Request, res: Response) => {
     return;
   }
   try {
-    const { name, user, phone, avatar, address, introduce } = req.body
+    const { name, phone, avatar, address, introduce } = req.body;
+    const userId = getUser(req)._id
     // check if user exist
-    const userExists = await User.findById(user)
+    const userExists = await User.findById(userId);
     if (!userExists) {
-      return res.status(404).send({ message: 'User not found' })
+      return res.status(404).send({ message: 'User not found' });
     }
     // check if the store exist
-    const storeExist = await Store.findOne({ user: user })
+    const storeExist = await Store.findOne({ user: userId });
     if (storeExist) {
-      return res.status(409).send({ message: 'Store already Exist!' })
+      return res.status(409).send({ message: 'Store already Exist!' });
     }
     // check if role of user is "store"
-    const userRole = await User.findById(user)
-    if (userRole?.role !== "store") {
-      return res.status(404).send({ message: 'The role of user is not store!' })
+    const userRole = await User.findById(userId);
+    if (userRole?.role !== 'store') {
+      return res
+        .status(404)
+        .send({ message: 'The role of user is not store!' });
     }
 
     const store = await Store.create({
       name,
-      user,
+      user: userId,
       avatar,
       introduce,
       address,
-      phone
-    })
+      phone,
+    });
     res.status(201).send({ success: true, message: '註冊成功', store });
     // console.log({ message: 'Store created successfully!!', store })
-
   } catch (error) {
     console.error('Error creating store', error);
     res.status(500).send({ message: 'Error creating store', error });
   }
-}
-
+};
 
 // Read all stores
 export const getStores = async (req: Request, res: Response): Promise<void> => {
   try {
     const stores = await Store.find();
-    res.status(200).send({ success: true, message: "店家列表取得成功", data: stores });
+    res
+      .status(200)
+      .send({ success: true, message: '店家列表取得成功', data: stores });
   } catch (error) {
     console.error('Error fetching stores', error);
     res.status(500).send({
@@ -111,10 +114,9 @@ export const updateStore = async (
     Object.assign(store, updateData);
     await store.save({ validateBeforeSave: true });
 
-    res.status(200).send({ status: true, message: "店家", store });
+    res.status(200).send({ status: true, message: '店家', store });
   } catch (error) {
     console.error('Error updating store', error);
     res.status(500).send({ message: 'Error updating store', error });
   }
 };
-

@@ -16,6 +16,7 @@ exports.updateStore = exports.getStoreById = exports.getStores = exports.createS
 const express_validator_1 = require("express-validator");
 const User_1 = __importDefault(require("@/models/User"));
 const Store_1 = require("../models/Store");
+const help_1 = require("@/utils/help");
 // Create a new store
 const createStore = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     // check validation result
@@ -25,29 +26,32 @@ const createStore = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         return;
     }
     try {
-        const { name, user, phone, avatar, address, introduce } = req.body;
+        const { name, phone, avatar, address, introduce } = req.body;
+        const userId = (0, help_1.getUser)(req)._id;
         // check if user exist
-        const userExists = yield User_1.default.findById(user);
+        const userExists = yield User_1.default.findById(userId);
         if (!userExists) {
             return res.status(404).send({ message: 'User not found' });
         }
         // check if the store exist
-        const storeExist = yield Store_1.Store.findOne({ user: user });
+        const storeExist = yield Store_1.Store.findOne({ user: userId });
         if (storeExist) {
             return res.status(409).send({ message: 'Store already Exist!' });
         }
         // check if role of user is "store"
-        const userRole = yield User_1.default.findById(user);
-        if ((userRole === null || userRole === void 0 ? void 0 : userRole.role) !== "store") {
-            return res.status(404).send({ message: 'The role of user is not store!' });
+        const userRole = yield User_1.default.findById(userId);
+        if ((userRole === null || userRole === void 0 ? void 0 : userRole.role) !== 'store') {
+            return res
+                .status(404)
+                .send({ message: 'The role of user is not store!' });
         }
         const store = yield Store_1.Store.create({
             name,
-            user,
+            user: userId,
             avatar,
             introduce,
             address,
-            phone
+            phone,
         });
         res.status(201).send({ success: true, message: '註冊成功', store });
         // console.log({ message: 'Store created successfully!!', store })
@@ -62,7 +66,9 @@ exports.createStore = createStore;
 const getStores = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const stores = yield Store_1.Store.find();
-        res.status(200).send({ success: true, message: "店家列表取得成功", data: stores });
+        res
+            .status(200)
+            .send({ success: true, message: '店家列表取得成功', data: stores });
     }
     catch (error) {
         console.error('Error fetching stores', error);
@@ -110,7 +116,7 @@ const updateStore = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         }
         Object.assign(store, updateData);
         yield store.save({ validateBeforeSave: true });
-        res.status(200).send({ status: true, message: "店家", store });
+        res.status(200).send({ status: true, message: '店家', store });
     }
     catch (error) {
         console.error('Error updating store', error);
