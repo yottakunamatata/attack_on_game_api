@@ -15,7 +15,7 @@ export const createStore = async (req: Request, res: Response) => {
   }
   try {
     const { name, phone, avatar, address, introduce } = req.body;
-    const userId = getUser(req)._id
+    const userId = getUser(req)._id;
     // check if user exist
     const userExists = await User.findById(userId);
     if (!userExists) {
