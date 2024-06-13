@@ -1,11 +1,11 @@
 import { Router } from 'express';
-import EventController from '@/controllers/eventController';
+import { EventController } from '@/controllers/eventController';
 import { handleValidationErrors } from '@/middlewares/handleValidationErrors';
-import eventValidator from '@/validators/eventValidator';
+import { EventValidator } from '@/validators/eventValidator';
 const router = Router();
 router.post(
   '/',
-  eventValidator,
+  EventValidator,
   handleValidationErrors,
   EventController.createEvent,
 );

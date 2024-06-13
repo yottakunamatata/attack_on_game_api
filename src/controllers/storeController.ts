@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
 import User from '@/models/User';
-import { Store } from '../models/Store';
+import { Store } from '@/models/Store';
 import { UserRole } from '@/models/User';
 import { getUser } from '@/utils/help';
 
@@ -51,12 +51,13 @@ export const createStore = async (req: Request, res: Response) => {
 };
 
 // Read all stores
-export const getStores = async (req: Request, res: Response): Promise<void> => {
+export const getStores = async (req: Request, res: Response) => {
   try {
     const stores = await Store.find();
     res
       .status(200)
       .send({ success: true, message: '店家列表取得成功', data: stores });
+    console.log(stores);
   } catch (error) {
     console.error('Error fetching stores', error);
     res.status(500).send({
@@ -67,10 +68,7 @@ export const getStores = async (req: Request, res: Response): Promise<void> => {
 };
 
 // Read store by ID
-export const getStoreById = async (
-  req: Request,
-  res: Response,
-): Promise<void> => {
+export const getStoreById = async (req: Request, res: Response) => {
   try {
     const storeId = req.params.id;
     const store = await Store.findById(storeId);
@@ -88,10 +86,7 @@ export const getStoreById = async (
 };
 
 // Update store data
-export const updateStore = async (
-  req: Request,
-  res: Response,
-): Promise<void> => {
+export const updateStore = async (req: Request, res: Response) => {
   // check validation result
   const errors = validationResult(req);
   if (!errors.isEmpty()) {

@@ -8,16 +8,17 @@ import {
   getStoreById,
   updateStore,
 } from '../controllers/storeController';
+import { jwtAuthenticator } from '../middlewares/auth';
 
 const router = express.Router();
 
 // 待更新
-router.post('/', createStore);
-
 router.get('/', getStores);
 router.get('/:id', getStoreById);
+router.post('/', jwtAuthenticator, createStore);
 router.patch(
   '/:id',
+  jwtAuthenticator,
   validateFileds(allowedFileds),
   storValidationRule,
   updateStore,

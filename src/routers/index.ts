@@ -8,9 +8,9 @@ import PasswordRouter from '@/routers/password';
 import storeRouter from '@/routers/storeRouter';
 const router = Router();
 
+router.use('/store', storeRouter);
 router.use('/user', UserRouter);
 router.use('/player', jwtAuthenticator, PlayerRouter);
-router.use('/store', jwtAuthenticator, storeRouter);
 router.post('/login', localAuthenticator, generateJWT);
 router.use('/event', EventRouter);
 router.use(PasswordRouter);
