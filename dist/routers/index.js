@@ -9,6 +9,7 @@ const auth_1 = require("../middlewares/auth");
 const user_1 = __importDefault(require("@/routers/user"));
 const eventRouter_1 = __importDefault(require("@/routers/eventRouter"));
 const player_1 = __importDefault(require("@/routers/player"));
+const storeRouter_1 = __importDefault(require("@/routers/storeRouter"));
 const orderRouter_1 = __importDefault(require("@/routers/orderRouter"));
 const password_1 = __importDefault(require("@/routers/password"));
 const router = (0, express_1.Router)();
@@ -18,5 +19,6 @@ router.post('/login', auth_1.localAuthenticator, generateJWT_1.default);
 router.use('/event', eventRouter_1.default);
 router.use('/order', orderRouter_1.default);
 router.use(password_1.default);
+router.use('/store', storeRouter_1.default);
 exports.default = router;
 //# sourceMappingURL=index.js.map

@@ -148,7 +148,7 @@ exports.validationConfig = {
         limit: [
             (0, express_validator_1.query)('limit')
                 .optional()
-                .isInt({ min: 1, max: Number(EventRequest_1.DefaultQuery.MAX_LIMIT) })
+                .isInt({ min: 1, max: Number(EventRequest_1.DefaultQuery.LIMIT) })
                 .toInt()
                 .withMessage('請輸入有效的最小參與人數！'),
         ],
