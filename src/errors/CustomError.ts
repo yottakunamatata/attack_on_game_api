@@ -5,9 +5,8 @@ export class CustomError extends Error {
 
   constructor(code: CustomResponseType, msg: string) {
     super(msg);
+    console.log(code);
     this.code = code || CustomResponseType.OTHER;
     this.msg = msg;
   }
 }
-export const MONGODB_ERROR_MSG = '資料庫的相關錯誤';
-export const SPECIAL_ERROR_MSG = '神秘的錯誤，可能是世界奇蹟';
