@@ -37,7 +37,8 @@ const sendEamilValidationCode = (to, validationToken, frontEndUrl) => __awaiter(
         refresh_token: process.env.GOOGLE_REFRESH_TOKEN,
     });
     const { token } = yield oauth2Client.getAccessToken();
-    const transporter = nodemailer_1.default.createTransport({
+    //create smtpTransport
+    const smtpTransport = {
         service: 'gmail',
         auth: {
             type: 'OAuth2',
@@ -47,7 +48,8 @@ const sendEamilValidationCode = (to, validationToken, frontEndUrl) => __awaiter(
             refreshToken: process.env.GOOGLE_REFRESH_TOKEN,
             accessToken: token,
         },
-    });
+    };
+    const transporter = nodemailer_1.default.createTransport(smtpTransport);
     const mailOptions = {
         from: process.env.EMAIL_ADDRESS,
         to,
