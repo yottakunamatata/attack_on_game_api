@@ -8,13 +8,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.sendEamilValidationCode = exports.getUser = void 0;
 const googleapis_1 = require("googleapis");
-const nodemailer_1 = __importDefault(require("nodemailer"));
 function isRequestWithUser(req) {
     return req.user !== undefined;
 }
@@ -37,7 +33,8 @@ const sendEamilValidationCode = (to, validationToken, frontEndUrl) => __awaiter(
         refresh_token: process.env.GOOGLE_REFRESH_TOKEN,
     });
     const { token } = yield oauth2Client.getAccessToken();
-    const transporter = nodemailer_1.default.createTransport({
+    //create smtpTransport
+    const smtpTransport = {
         service: 'gmail',
         auth: {
             type: 'OAuth2',
@@ -47,7 +44,7 @@ const sendEamilValidationCode = (to, validationToken, frontEndUrl) => __awaiter(
             refreshToken: process.env.GOOGLE_REFRESH_TOKEN,
             accessToken: token,
         },
-    });
+    };
     const mailOptions = {
         from: process.env.EMAIL_ADDRESS,
         to,

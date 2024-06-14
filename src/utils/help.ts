@@ -3,6 +3,7 @@ import { IUser } from '../models/User';
 import { RequestWithUser } from '../types/commonRequest';
 import { google } from 'googleapis';
 import nodemailer from 'nodemailer';
+import SMTPTransport from 'nodemailer/lib/smtp-transport';
 
 function isRequestWithUser(req: any): req is RequestWithUser {
   return req.user !== undefined;
@@ -35,7 +36,9 @@ export const sendEamilValidationCode = async (
 
   const { token } = await oauth2Client.getAccessToken();
 
-  const transporter = nodemailer.createTransport({
+  //create smtpTransport
+
+  const smtpTransport: SMTPTransport.Options = {
     service: 'gmail',
     auth: {
       type: 'OAuth2',
@@ -43,9 +46,11 @@ export const sendEamilValidationCode = async (
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
       refreshToken: process.env.GOOGLE_REFRESH_TOKEN,
-      accessToken: token,
+      accessToken: token!,
     },
-  });
+  };
+
+  const transporter = nodemailer.createTransport(smtpTransport);
 
   const mailOptions = {
     from: process.env.EMAIL_ADDRESS as string,
