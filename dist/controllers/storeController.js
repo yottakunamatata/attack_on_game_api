@@ -69,7 +69,6 @@ const getStores = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         res
             .status(200)
             .send({ success: true, message: '店家列表取得成功', data: stores });
-        console.log(stores);
     }
     catch (error) {
         console.error('Error fetching stores', error);

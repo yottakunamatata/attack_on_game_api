@@ -25,6 +25,15 @@ exports.storValidationRule = [
         .optional()
         .isString()
         .withMessage('Address must be a String.'),
-    (0, express_validator_1.body)('phone').optional().isString().withMessage('Phone must be a String.'),
+    (0, express_validator_1.body)('phone')
+        .optional()
+        .isString()
+        .withMessage('Phone must be a String.')
+        .custom((value) => {
+        if (!value.match(/^0[0-9]{9}$/)) {
+            throw new Error('Invalid phone number');
+        }
+        return true;
+    }),
 ];
 //# sourceMappingURL=storeValidator.js.map

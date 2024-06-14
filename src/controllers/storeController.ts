@@ -57,7 +57,6 @@ export const getStores = async (req: Request, res: Response) => {
     res
       .status(200)
       .send({ success: true, message: '店家列表取得成功', data: stores });
-    console.log(stores);
   } catch (error) {
     console.error('Error fetching stores', error);
     res.status(500).send({

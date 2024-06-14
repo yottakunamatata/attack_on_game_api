@@ -24,5 +24,15 @@ export const storValidationRule = [
     .optional()
     .isString()
     .withMessage('Address must be a String.'),
-  body('phone').optional().isString().withMessage('Phone must be a String.'),
+  body('phone')
+    .optional()
+    .isString()
+    .withMessage('Phone must be a String.')
+    .custom((value) => {
+      if (!value.match(/^0[0-9]{9}$/)) {
+        throw new Error('Invalid phone number');
+      }
+      return true;
+    })
+  ,
 ];
