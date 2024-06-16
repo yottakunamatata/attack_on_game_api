@@ -33,6 +33,5 @@ export const storValidationRule = [
         throw new Error('Invalid phone number');
       }
       return true;
-    })
-  ,
+    }),
 ];
