@@ -2,26 +2,12 @@ import express from 'express';
 import { storValidationRule } from '../validators/storeValidator';
 import { validateFileds } from '../middlewares/validateFileds';
 import { allowedFileds } from '../validators/storeValidator';
-import {
-  createStore,
-  getStores,
-  getStoreById,
-  updateStore,
-} from '../controllers/storeController';
+import { createComment } from '../controllers/commentController';
 import { jwtAuthenticator } from '../middlewares/auth';
 
 const router = express.Router();
 
 // 待更新
-router.get('/', getStores);
-router.get('/:id', getStoreById);
-router.post('/', jwtAuthenticator, createStore);
-router.patch(
-  '/:id',
-  jwtAuthenticator,
-  validateFileds(allowedFileds),
-  storValidationRule,
-  updateStore,
-);
+router.post('/event/:id/messageBoard', jwtAuthenticator, createComment);
 
 export default router;
