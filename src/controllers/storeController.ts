@@ -50,10 +50,12 @@ export const createStore = async (req: Request, res: Response) => {
   }
 };
 // Read all stores
-export const getStores = async (req: Request, res: Response): Promise<void> => {
+export const getStores = async (req: Request, res: Response) => {
   try {
     const stores = await Store.find();
-    res.status(200).send(stores);
+    res
+      .status(200)
+      .send({ success: true, message: '店家列表取得成功', data: stores });
   } catch (error) {
     console.error('Error fetching stores', error);
     res.status(500).send({
@@ -64,10 +66,7 @@ export const getStores = async (req: Request, res: Response): Promise<void> => {
 };
 
 // Read store by ID
-export const getStoreById = async (
-  req: Request,
-  res: Response,
-): Promise<void> => {
+export const getStoreById = async (req: Request, res: Response) => {
   try {
     const storeId = req.params.id;
     const store = await Store.findById(storeId);
@@ -77,7 +76,7 @@ export const getStoreById = async (
       res.status(404).send({ message: 'Store not found!' });
       return;
     }
-    res.status(200).send({ store });
+    res.status(200).send({ status: true, data: store });
   } catch (error) {
     console.error('Error fetching store', error);
     res.status(500).send({ message: 'Error fetching store', error });
@@ -85,10 +84,7 @@ export const getStoreById = async (
 };
 
 // Update store data
-export const updateStore = async (
-  req: Request,
-  res: Response,
-): Promise<void> => {
+export const updateStore = async (req: Request, res: Response) => {
   // check validation result
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -111,27 +107,9 @@ export const updateStore = async (
     Object.assign(store, updateData);
     await store.save({ validateBeforeSave: true });
 
-    res.status(200).send(store);
+    res.status(200).send({ status: true, message: '店家', store });
   } catch (error) {
     console.error('Error updating store', error);
     res.status(500).send({ message: 'Error updating store', error });
-  }
-};
-
-// Delete store
-export const deleteStore = async (
-  req: Request,
-  res: Response,
-): Promise<void> => {
-  try {
-    const store = await Store.findById(req.params.id);
-    if (!store) {
-      res.status(404).send({ message: 'Store not found.' });
-      return;
-    }
-    await store.deleteOne();
-    res.status(200).send({ message: 'Store deleted successfully!', store });
-  } catch (error) {
-    res.status(500).send({ message: 'Error deleting store', error });
   }
 };

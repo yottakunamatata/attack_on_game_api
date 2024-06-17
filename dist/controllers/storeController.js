@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteStore = exports.updateStore = exports.getStoreById = exports.getStores = exports.createStore = void 0;
+exports.updateStore = exports.getStoreById = exports.getStores = exports.createStore = void 0;
 const express_validator_1 = require("express-validator");
 const User_1 = __importDefault(require("@/models/User"));
 const Store_1 = require("@/models/Store");
@@ -66,7 +66,9 @@ exports.createStore = createStore;
 const getStores = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const stores = yield Store_1.Store.find();
-        res.status(200).send(stores);
+        res
+            .status(200)
+            .send({ success: true, message: '店家列表取得成功', data: stores });
     }
     catch (error) {
         console.error('Error fetching stores', error);
@@ -87,7 +89,7 @@ const getStoreById = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             res.status(404).send({ message: 'Store not found!' });
             return;
         }
-        res.status(200).send({ store });
+        res.status(200).send({ status: true, data: store });
     }
     catch (error) {
         console.error('Error fetching store', error);
@@ -114,7 +116,7 @@ const updateStore = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         }
         Object.assign(store, updateData);
         yield store.save({ validateBeforeSave: true });
-        res.status(200).send(store);
+        res.status(200).send({ status: true, message: '店家', store });
     }
     catch (error) {
         console.error('Error updating store', error);
@@ -122,20 +124,4 @@ const updateStore = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 exports.updateStore = updateStore;
-// Delete store
-const deleteStore = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const store = yield Store_1.Store.findById(req.params.id);
-        if (!store) {
-            res.status(404).send({ message: 'Store not found.' });
-            return;
-        }
-        yield store.deleteOne();
-        res.status(200).send({ message: 'Store deleted successfully!', store });
-    }
-    catch (error) {
-        res.status(500).send({ message: 'Error deleting store', error });
-    }
-});
-exports.deleteStore = deleteStore;
 //# sourceMappingURL=storeController.js.map

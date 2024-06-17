@@ -7,7 +7,6 @@ import {
   getStores,
   getStoreById,
   updateStore,
-  deleteStore,
 } from '../controllers/storeController';
 import { jwtAuthenticator } from '../middlewares/auth';
 
@@ -16,14 +15,13 @@ const router = express.Router();
 router.post('/', jwtAuthenticator, createStore);
 router.get('/', getStores);
 router.get('/:id', getStoreById);
+router.post('/', jwtAuthenticator, createStore);
 router.patch(
   '/:id',
+  jwtAuthenticator,
   validateFileds(allowedFileds),
   storValidationRule,
   updateStore,
 );
-
-// 待更新
-router.delete('/:id', deleteStore);
 
 export default router;
