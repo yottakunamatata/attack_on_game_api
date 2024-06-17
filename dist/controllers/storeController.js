@@ -15,7 +15,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteStore = exports.updateStore = exports.getStoreById = exports.getStores = exports.createStore = void 0;
 const express_validator_1 = require("express-validator");
 const User_1 = __importDefault(require("@/models/User"));
-const store_1 = require("@/models/store");
+const Store_1 = require("@/models/Store");
+const help_1 = require("@/utils/help");
 // Create a new store
 const createStore = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     // check validation result
@@ -25,27 +26,35 @@ const createStore = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         return;
     }
     try {
-        const { name, user, phone, avatar, address, introduce } = req.body;
+        const { name, phone, avatar, address, introduce } = req.body;
+        const userId = (0, help_1.getUser)(req)._id;
         // check if user exist
-        const userExists = yield User_1.default.findById(user);
+        const userExists = yield User_1.default.findById(userId);
         if (!userExists) {
             return res.status(404).send({ message: 'User not found' });
         }
         // check if the store exist
-        const storeExist = yield store_1.Store.findOne({ user: user });
+        const storeExist = yield Store_1.Store.findOne({ user: userId });
         if (storeExist) {
             return res.status(409).send({ message: 'Store already Exist!' });
         }
-        const store = yield store_1.Store.create({
+        // check if role of user is "store"
+        const userRole = yield User_1.default.findById(userId);
+        if ((userRole === null || userRole === void 0 ? void 0 : userRole.role) !== 'store') {
+            return res
+                .status(404)
+                .send({ message: 'The role of user is not store!' });
+        }
+        const store = yield Store_1.Store.create({
             name,
-            user,
+            user: userId,
             avatar,
             introduce,
             address,
             phone,
         });
-        res.status(201).send({ message: 'Store created successfully!!', store });
-        console.log({ message: 'Store created successfully!!', store });
+        res.status(201).send({ success: true, message: '註冊成功', store });
+        // console.log({ message: 'Store created successfully!!', store })
     }
     catch (error) {
         console.error('Error creating store', error);
@@ -56,7 +65,7 @@ exports.createStore = createStore;
 // Read all stores
 const getStores = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const stores = yield store_1.Store.find();
+        const stores = yield Store_1.Store.find();
         res.status(200).send(stores);
     }
     catch (error) {
@@ -72,7 +81,7 @@ exports.getStores = getStores;
 const getStoreById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const storeId = req.params.id;
-        const store = yield store_1.Store.findById(storeId);
+        const store = yield Store_1.Store.findById(storeId);
         // if store is null or undefined
         if (!store) {
             res.status(404).send({ message: 'Store not found!' });
@@ -98,7 +107,7 @@ const updateStore = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         const storeId = req.params.id;
         const updateData = req.body;
         // find storeId
-        const store = yield store_1.Store.findById(storeId);
+        const store = yield Store_1.Store.findById(storeId);
         if (!store) {
             res.status(404).send({ message: 'Store not found!' });
             return;
@@ -116,7 +125,7 @@ exports.updateStore = updateStore;
 // Delete store
 const deleteStore = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const store = yield store_1.Store.findById(req.params.id);
+        const store = yield Store_1.Store.findById(req.params.id);
         if (!store) {
             res.status(404).send({ message: 'Store not found.' });
             return;

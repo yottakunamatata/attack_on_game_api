@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
 import User from '@/models/User';
-import { Store } from '@/models/store';
+import { Store } from '@/models/Store';
 import { UserRole } from '@/models/User';
 import { getUser } from '@/utils/help';
 
@@ -14,34 +14,41 @@ export const createStore = async (req: Request, res: Response) => {
     return;
   }
   try {
-    const { name, user, phone, avatar, address, introduce } = req.body;
+    const { name, phone, avatar, address, introduce } = req.body;
+    const userId = getUser(req)._id;
     // check if user exist
-    const userExists = await User.findById(user);
+    const userExists = await User.findById(userId);
     if (!userExists) {
       return res.status(404).send({ message: 'User not found' });
     }
     // check if the store exist
-    const storeExist = await Store.findOne({ user: user });
+    const storeExist = await Store.findOne({ user: userId });
     if (storeExist) {
       return res.status(409).send({ message: 'Store already Exist!' });
+    }
+    // check if role of user is "store"
+    const userRole = await User.findById(userId);
+    if (userRole?.role !== 'store') {
+      return res
+        .status(404)
+        .send({ message: 'The role of user is not store!' });
     }
 
     const store = await Store.create({
       name,
-      user,
+      user: userId,
       avatar,
       introduce,
       address,
       phone,
     });
-    res.status(201).send({ message: 'Store created successfully!!', store });
-    console.log({ message: 'Store created successfully!!', store });
+    res.status(201).send({ success: true, message: '註冊成功', store });
+    // console.log({ message: 'Store created successfully!!', store })
   } catch (error) {
     console.error('Error creating store', error);
     res.status(500).send({ message: 'Error creating store', error });
   }
 };
-
 // Read all stores
 export const getStores = async (req: Request, res: Response): Promise<void> => {
   try {

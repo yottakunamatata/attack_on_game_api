@@ -9,12 +9,11 @@ import {
   updateStore,
   deleteStore,
 } from '../controllers/storeController';
+import { jwtAuthenticator } from '../middlewares/auth';
 
 const router = express.Router();
 
-// 待更新
-router.post('/', createStore);
-
+router.post('/', jwtAuthenticator, createStore);
 router.get('/', getStores);
 router.get('/:id', getStoreById);
 router.patch(
