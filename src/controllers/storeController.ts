@@ -49,7 +49,6 @@ export const createStore = async (req: Request, res: Response) => {
     res.status(500).send({ message: 'Error creating store', error });
   }
 };
-
 // Read all stores
 export const getStores = async (req: Request, res: Response) => {
   try {

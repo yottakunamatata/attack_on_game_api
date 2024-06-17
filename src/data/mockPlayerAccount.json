@@ -7,12 +7,7 @@
     "user": "666fcbeb40b972eeb8db5ef7",
     "phone": "0923456785",
     "avatar": "https://i.imgur.com/xmuq6D1.jpeg",
-    "preferGame": [
-      "策略遊戲",
-      "卡牌遊戲",
-      "派對遊戲",
-      "陣營遊戲"
-    ]
+    "preferGame": ["策略遊戲", "卡牌遊戲", "派對遊戲", "陣營遊戲"]
   },
   {
     "password": "123456789",
@@ -22,9 +17,7 @@
     "user": "666fcbf340b972eeb8db5efa",
     "phone": "0923456784",
     "avatar": "https://i.imgur.com/K4urH3n.jpeg",
-    "preferGame": [
-      "陣營遊戲"
-    ]
+    "preferGame": ["陣營遊戲"]
   },
   {
     "password": "123456789",
@@ -34,10 +27,7 @@
     "user": "666fcbfa40b972eeb8db5efd",
     "phone": "0923456782",
     "avatar": "https://i.imgur.com/1uv4UyN.jpeg",
-    "preferGame": [
-      "卡牌遊戲",
-      "陣營遊戲"
-    ]
+    "preferGame": ["卡牌遊戲", "陣營遊戲"]
   },
   {
     "password": "123456789",
@@ -47,10 +37,7 @@
     "user": "666fcc0240b972eeb8db5f00",
     "phone": "0923456782",
     "avatar": "https://i.imgur.com/CqCiRDG.jpeg",
-    "preferGame": [
-      "卡牌遊戲",
-      "陣營遊戲"
-    ]
+    "preferGame": ["卡牌遊戲", "陣營遊戲"]
   },
   {
     "password": "123456789",
@@ -59,11 +46,7 @@
     "name": "皓月清涼",
     "phone": "0923456783",
     "avatar": "https://i.imgur.com/ec8aryH.jpeg",
-    "preferGame": [
-      "派對遊戲",
-      "卡牌遊戲",
-      "策略遊戲"
-    ]
+    "preferGame": ["派對遊戲", "卡牌遊戲", "策略遊戲"]
   },
   {
     "password": "123456789",
@@ -72,10 +55,7 @@
     "name": "Frank",
     "phone": "0923456786",
     "avatar": "https://i.imgur.com/Ij4TXuN.jpeg",
-    "preferGame": [
-      "卡牌遊戲",
-      "派對遊戲"
-    ]
+    "preferGame": ["卡牌遊戲", "派對遊戲"]
   },
   {
     "password": "123456789",
@@ -84,9 +64,6 @@
     "name": "Oath-Ⅱ卑微的誓言",
     "phone": "0923456787",
     "avatar": "https://i.imgur.com/FHNOuam.jpeg",
-    "preferGame": [
-      "策略遊戲",
-      "陣營遊戲"
-    ]
+    "preferGame": ["策略遊戲", "陣營遊戲"]
   }
 ]
