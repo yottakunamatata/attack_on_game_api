@@ -36,6 +36,17 @@ class OrderRepository {
             }
         });
     }
+    findAllBuyers(eventId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const orders = yield OrderModel_1.default.find({ eventId: eventId });
+                return orders;
+            }
+            catch (error) {
+                throw new CustomError_1.CustomError(CustomResponseType_1.CustomResponseType.DATABASE_OPERATION_FAILED, `${OtherResponseType_1.MONGODB_ERROR_MSG}:${error.message || error}`);
+            }
+        });
+    }
     findAll(queryParams, optionParams) {
         return __awaiter(this, void 0, void 0, function* () {
             var _a, _b;
@@ -60,7 +71,7 @@ class OrderRepository {
                 return event;
             }
             catch (error) {
-                throw new CustomError_1.CustomError(CustomResponseType_1.CustomResponseType.DATABASE_OPERATION_FAILED, `${OtherResponseType_1.MONGODB_ERROR_MSG}:::::::::::::${error.message || error}`);
+                throw new CustomError_1.CustomError(CustomResponseType_1.CustomResponseType.DATABASE_OPERATION_FAILED, `${OtherResponseType_1.MONGODB_ERROR_MSG}:${error.message || error}`);
             }
         });
     }
@@ -97,4 +108,4 @@ class OrderRepository {
     }
 }
 exports.OrderRepository = OrderRepository;
-//# sourceMappingURL=orderRepository.js.map
+//# sourceMappingURL=OrderRepository.js.map
