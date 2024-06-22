@@ -4,15 +4,30 @@ import { commentContentObject } from '@/models/CommentContentObject';
 import { getUser } from '@/utils/help';
 import User from '@/models/User';
 import EventModel from '@/models/EventModel';
-import Player from '@/models/Player';
 import { Store } from '@/models/Store';
+import { request } from 'websocket';
 
-// GET 取得活動留言板資訊 - Create + Get?
+// GET 取得活動留言板資訊 - Create comment & GET comment?
 
+export const getComments = async (req: Request, res: Response) => {
+  // check validation result
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    res.status(400).json(errors)
+    return
+  }
+  try {
+    const eventId = req.params.eventId
+    const contents = await commentContentObject.find({ eventId: eventId })
+    res.status(200).send({ success: true, message: '留言板資訊取得成功', contents: contents });
 
+  } catch (error) {
+    res.status(500).send({ message: 'Error creating comment', error: error });
+    console.log({ message: 'Error creating comment', error: error });
+  }
+}
 
 // POST 建立留言 （玩家）
-
 export const createComment = async (req: Request, res: Response) => {
   // check validation result
   const errors = validationResult(req);

@@ -12,14 +12,32 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createReply = exports.createComment = void 0;
+exports.createReply = exports.createComment = exports.getComments = void 0;
 const express_validator_1 = require("express-validator");
 const CommentContentObject_1 = require("@/models/CommentContentObject");
 const help_1 = require("@/utils/help");
 const User_1 = __importDefault(require("@/models/User"));
 const EventModel_1 = __importDefault(require("@/models/EventModel"));
 const Store_1 = require("@/models/Store");
-// GET 取得活動留言板資訊
+// GET 取得活動留言板資訊 - Create comment & GET comment?
+const getComments = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    // check validation result
+    const errors = (0, express_validator_1.validationResult)(req);
+    if (!errors.isEmpty()) {
+        res.status(400).json(errors);
+        return;
+    }
+    try {
+        const eventId = req.params.eventId;
+        const contents = yield CommentContentObject_1.commentContentObject.find({ eventId: eventId });
+        res.status(200).send({ success: true, message: '留言板資訊取得成功', contents: contents });
+    }
+    catch (error) {
+        res.status(500).send({ message: 'Error creating comment', error: error });
+        console.log({ message: 'Error creating comment', error: error });
+    }
+});
+exports.getComments = getComments;
 // POST 建立留言 （玩家）
 const createComment = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     // check validation result
