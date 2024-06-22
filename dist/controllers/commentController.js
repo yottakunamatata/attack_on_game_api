@@ -14,7 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createReply = exports.createComment = exports.getComments = void 0;
 const express_validator_1 = require("express-validator");
-const CommentContentObject_1 = require("@/models/CommentContentObject");
+const Comment_1 = require("@/models/Comment");
 const help_1 = require("@/utils/help");
 const User_1 = __importDefault(require("@/models/User"));
 const EventModel_1 = __importDefault(require("@/models/EventModel"));
@@ -29,8 +29,23 @@ const getComments = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     }
     try {
         const eventId = req.params.eventId;
-        const contents = yield CommentContentObject_1.commentContentObject.find({ eventId: eventId });
-        res.status(200).send({ success: true, message: '留言板資訊取得成功', contents: contents });
+        const contents = yield Comment_1.Comment.find({ eventId: eventId });
+        // check if comment exist
+        if (!contents || contents.length == 0) {
+            return res.status(404).send({ message: 'Comments not found!' });
+        }
+        // check if Event exist
+        const eventExist = yield EventModel_1.default.findOne({ idNumber: eventId });
+        if (!eventExist) {
+            return res.status(404).send({ message: 'Event not found!' });
+        }
+        res
+            .status(200)
+            .send({
+            success: true,
+            message: '留言板資訊取得成功',
+            contents: contents,
+        });
     }
     catch (error) {
         res.status(500).send({ message: 'Error creating comment', error: error });
@@ -71,14 +86,14 @@ const createComment = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         const typeValue = 'Comment';
         const massageExist = null;
         const storeId = null;
-        const comment = yield CommentContentObject_1.commentContentObject.create({
+        const comment = yield Comment_1.Comment.create({
             author,
             eventId,
             storeId: storeId,
             content,
             createdAt: Date.now(),
             type: typeValue,
-            messageId: massageExist
+            messageId: massageExist,
         });
         res.status(201).send({ success: true, message: '留言建立成功', comment });
     }
@@ -121,20 +136,20 @@ const createReply = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                 .send({ message: 'The role of user is not store!' });
         }
         // check if message Exist
-        const messageExist = yield CommentContentObject_1.commentContentObject.findById(messageId);
+        const messageExist = yield Comment_1.Comment.findById(messageId);
         if (!messageExist) {
             return res.status(404).send({ message: 'Comment not found!' });
         }
         // generate "type" filed
         const typeValue = 'reply';
-        const comment = yield CommentContentObject_1.commentContentObject.create({
+        const comment = yield Comment_1.Comment.create({
             author,
             eventId,
             storeId: storeId,
             content,
             createdAt: Date.now(),
             type: typeValue,
-            messageId: messageId
+            messageId: messageId,
         });
         res.status(201).send({ success: true, message: '留言建立成功', comment });
     }
