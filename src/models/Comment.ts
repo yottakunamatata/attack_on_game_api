@@ -1,21 +1,14 @@
 import { Schema, Document, model } from 'mongoose';
 
 export interface IComment extends Document {
-  event: Schema.Types.ObjectId;
+  eventId: String;
+  contents: Schema.Types.DocumentArray
   createAt: Date;
 }
 
 const commentSchema: Schema = new Schema({
-  name: { type: String, required: true },
-  user: {
-    type: Schema.Types.ObjectId,
-    ref: 'users',
-    required: true,
-  },
-  avatar: String,
-  introduce: String,
-  address: String,
-  phone: String,
+  eventId: { type: String, require: true },
+  contents: { type: Schema.Types.DocumentArray, require: true }
 });
 
-export const Store = model<IComment>('Comments', commentSchema);
+export const Comment = model<IComment>('Comments', commentSchema);
