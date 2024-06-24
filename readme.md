@@ -6,7 +6,7 @@ AttackOnGame API是桌遊揪團網站【聚人】使用的後端API項目，目�
 
 ## 如何安装
 
-Node.js 版本建議為：`18.x` 以上
+Node.js 版本建議為：`v18.20.2` 
 
 ### 取得專案https://github.com/KamiiLiu/attack_on_game_api/tree/dev
 
@@ -50,7 +50,7 @@ attack_on_game_api
 ```
 
 ## 專案技術
-- node.js v20.12.2
+- node.js v18.20.2
 - express v4.16.1
 - mongoose v7.6.13
 - jsonwebtoken v9.0.2
