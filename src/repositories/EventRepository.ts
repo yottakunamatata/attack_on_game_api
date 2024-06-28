@@ -51,10 +51,6 @@ export class EventRepository implements IBaseRepository<EventDocument> {
     storeId: mongoose.Schema.Types.ObjectId,
     query = {},
   ): Promise<EventDocument[]> {
-    console.log({
-      storeId: new Types.ObjectId(storeId.toString()),
-      ...query,
-    });
     const eventData = await EventModel.find({
       storeId: new Types.ObjectId(storeId.toString()),
       ...query,
@@ -134,7 +130,7 @@ export class EventRepository implements IBaseRepository<EventDocument> {
   async update(content: Partial<EventDocument>): Promise<EventDocument | null> {
     try {
       return await EventModel.findOneAndUpdate(
-        { idNumber: content.idNumber },
+        { _id: content._id },
         {
           title: content.title,
           description: content.description,
