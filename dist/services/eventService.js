@@ -22,10 +22,14 @@ const eventQueryParams_1 = require("@/services/eventQueryParams");
 const CustomResponseType_1 = require("@/enums/CustomResponseType");
 const CustomError_1 = require("@/errors/CustomError");
 const EventResponseType_1 = require("@/types/EventResponseType");
+const LookupService_1 = require("./LookupService");
+const OrderRepository_1 = require("@/repositories/OrderRepository");
+const TicketRepository_1 = require("@/repositories/TicketRepository");
 class EventService {
     constructor() {
-        this.EventRepository = new EventRepository_1.EventRepository();
+        this.eventRepository = new EventRepository_1.EventRepository();
         this.queryParams = new eventQueryParams_1.QueryParamsParser();
+        this.lookupService = new LookupService_1.LookupService(new OrderRepository_1.OrderRepository(), this.eventRepository, new TicketRepository_1.TicketRepository());
     }
     getById(id) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -34,7 +38,8 @@ class EventService {
             if (!eventDTO.isPublish) {
                 throw new CustomError_1.CustomError(CustomResponseType_1.CustomResponseType.UNAUTHORIZED, EventResponseType_1.EventResponseType.FAILED_AUTHORIZATION);
             }
-            return eventDTO.toDetailDTO();
+            const owner = yield this.lookupService.findStoreByStoreId(eventDTO.storeId);
+            return { event: eventDTO.toDetailDTO(), store: owner };
         });
     }
     getAll(queryParams) {
@@ -47,20 +52,30 @@ class EventService {
             return lodash_1.default.map(eventData, (event) => new eventDTO_1.EventDTO(event).toDetailDTO());
         });
     }
-    create(content) {
+    create(queryParams) {
         return __awaiter(this, void 0, void 0, function* () {
-            const _content = new eventDTO_1.EventDTO(content).toDetailDTO();
-            return yield this.EventRepository.create(_content);
+            const store = yield this.lookupService.findStoreById(queryParams);
+            const _content = new eventDTO_1.EventDTO(Object.assign(Object.assign({}, queryParams.body), { storeId: store._id })).toDetailDTO();
+            console.log(_content);
+            return yield this.eventRepository.create(_content);
         });
     }
-    update(id, content) {
+    update(queryParams) {
         return __awaiter(this, void 0, void 0, function* () {
-            const updateContent = Object.assign(Object.assign({}, content), { idNumber: id });
-            const _content = new eventDTO_1.EventDTO(updateContent);
-            const _event = yield this.EventRepository.update(_content);
-            if (!lodash_1.default.isEmpty(_event)) {
-                const _eventDTO = new eventDTO_1.EventDTO(_event);
-                return _eventDTO.toDetailDTO();
+            const store = yield this.lookupService.findStore(queryParams);
+            const findEvent = yield this.eventRepository.findById(queryParams.params.id);
+            console.log('findEvent', findEvent);
+            console.log('store', store);
+            console.log('queryParams.params.id', queryParams.params.id);
+            if (store._id.toString() === findEvent.storeId.toString()) {
+                const updateContent = Object.assign({ _id: findEvent._id, idNumber: findEvent.idNumber, storeId: store._id }, queryParams.body);
+                const _content = new eventDTO_1.EventDTO(updateContent);
+                const _event = yield this.eventRepository.update(_content);
+                if (!lodash_1.default.isEmpty(_event)) {
+                    const _eventDTO = new eventDTO_1.EventDTO(_event);
+                    return _eventDTO.toDetailDTO();
+                }
+                throw new CustomError_1.CustomError(CustomResponseType_1.CustomResponseType.NOT_FOUND, EventResponseType_1.EventResponseType.FAILED_FOUND);
             }
             throw new CustomError_1.CustomError(CustomResponseType_1.CustomResponseType.NOT_FOUND, EventResponseType_1.EventResponseType.FAILED_FOUND);
         });

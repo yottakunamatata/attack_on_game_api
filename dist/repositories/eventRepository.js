@@ -53,7 +53,6 @@ class EventRepository {
     }
     getEventsByAprilStoreId(storeId_1) {
         return __awaiter(this, arguments, void 0, function* (storeId, query = {}) {
-            console.log(Object.assign({ storeId: new mongoose_1.Types.ObjectId(storeId.toString()) }, query));
             const eventData = yield EventModel_1.default.find(Object.assign({ storeId: new mongoose_1.Types.ObjectId(storeId.toString()) }, query));
             return eventData || [];
         });
@@ -106,7 +105,7 @@ class EventRepository {
     update(content) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                return yield EventModel_1.default.findOneAndUpdate({ idNumber: content.idNumber }, {
+                return yield EventModel_1.default.findOneAndUpdate({ _id: content._id }, {
                     title: content.title,
                     description: content.description,
                     isFoodAllowed: content.isFoodAllowed,
