@@ -86,12 +86,15 @@ export class OrderService {
 
     const targetOrderDTO = new OrderDTO(order);
     const targetEventDTO = new EventDTO(event);
-
+    const store = await this.lookupService.findStoreByStoreId(
+      targetEventDTO.storeId,
+    );
     if (targetOrderDTO.status === Status.CANCEL) {
       return {
         event: targetEventDTO.toSummaryDTO(),
         order: targetOrderDTO.toDetailDTO(),
         tickets: [],
+        store,
       };
     }
 
