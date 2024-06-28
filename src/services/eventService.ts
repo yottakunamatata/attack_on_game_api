@@ -22,7 +22,7 @@ export class EventService {
   private queryParams: QueryParamsParser;
   private lookupService: LookupService;
   constructor() {
-    this.EventRepository = new EventRepository();
+    this.eventRepository = new EventRepository();
     this.queryParams = new QueryParamsParser();
     this.lookupService = new LookupService(
       new OrderRepository(),
@@ -44,7 +44,7 @@ export class EventService {
   }
   async getAll(queryParams: any): Promise<Partial<EventDTO>[]> {
     const _queryParams = this.queryParams.parse(queryParams);
-    const eventData = await this.EventRepository.findAll(_queryParams);
+    const eventData = await this.eventRepository.findAll(_queryParams);
     if (_.isEmpty(eventData)) {
       throw new CustomError(
         CustomResponseType.NOT_FOUND,
@@ -101,7 +101,7 @@ export class EventService {
     optionsReq: Request,
   ): Promise<Partial<EventDTO>[]> {
     const queryParams = this.queryParams.parse(optionsReq);
-    const eventData = await this.EventRepository.getEventsByStoreId(
+    const eventData = await this.eventRepository.getEventsByStoreId(
       storeId,
       queryParams,
     );
@@ -118,7 +118,7 @@ export class EventService {
   }
 
   public async getSummaryEvents(id: string): Promise<Partial<EventDTO>> {
-    const event = await this.EventRepository.findById(id);
+    const event = await this.eventRepository.findById(id);
     if (_.isEmpty(event)) {
       throw new CustomError(
         CustomResponseType.NOT_FOUND,

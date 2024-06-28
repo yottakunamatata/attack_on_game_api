@@ -33,7 +33,7 @@ class EventService {
     }
     getById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const event = yield this.EventRepository.findById(id);
+            const event = yield this.eventRepository.findById(id);
             const eventDTO = new eventDTO_1.EventDTO(event);
             if (!eventDTO.isPublish) {
                 throw new CustomError_1.CustomError(CustomResponseType_1.CustomResponseType.UNAUTHORIZED, EventResponseType_1.EventResponseType.FAILED_AUTHORIZATION);
@@ -45,7 +45,7 @@ class EventService {
     getAll(queryParams) {
         return __awaiter(this, void 0, void 0, function* () {
             const _queryParams = this.queryParams.parse(queryParams);
-            const eventData = yield this.EventRepository.findAll(_queryParams);
+            const eventData = yield this.eventRepository.findAll(_queryParams);
             if (lodash_1.default.isEmpty(eventData)) {
                 throw new CustomError_1.CustomError(CustomResponseType_1.CustomResponseType.NOT_FOUND, EventResponseType_1.EventResponseType.FAILED_FOUND);
             }
@@ -86,7 +86,7 @@ class EventService {
     getEventsForStore(storeId, optionsReq) {
         return __awaiter(this, void 0, void 0, function* () {
             const queryParams = this.queryParams.parse(optionsReq);
-            const eventData = yield this.EventRepository.getEventsByStoreId(storeId, queryParams);
+            const eventData = yield this.eventRepository.getEventsByStoreId(storeId, queryParams);
             if (!lodash_1.default.isEmpty(eventData)) {
                 const eventDTOs = lodash_1.default.map(eventData, (event) => new eventDTO_1.EventDTO(event).toDetailDTO());
                 return eventDTOs;
@@ -96,7 +96,7 @@ class EventService {
     }
     getSummaryEvents(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const event = yield this.EventRepository.findById(id);
+            const event = yield this.eventRepository.findById(id);
             if (lodash_1.default.isEmpty(event)) {
                 throw new CustomError_1.CustomError(CustomResponseType_1.CustomResponseType.NOT_FOUND, EventResponseType_1.EventResponseType.FAILED_FOUND);
             }
