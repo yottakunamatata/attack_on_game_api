@@ -34,7 +34,7 @@ const getComments = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         const contents = yield Comment_1.Comment.find({ eventId: eventId });
         // check if comment exist
         if (!contents || contents.length == 0) {
-            return res.status(404).send({ message: 'Comments not found!' });
+            return res.status(202).send({ contents: contents, message: 'Comments not create yet!' });
         }
         // check if Event exist
         const eventExist = yield EventModel_1.default.findOne({ idNumber: eventId });
@@ -138,7 +138,7 @@ const createReply = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         // check if message Exist
         const messageExist = yield Comment_1.Comment.findById(messageId);
         if (!messageExist) {
-            return res.status(404).send({ message: 'Comment not found!' });
+            return res.status(404).send({ message: 'Comment not exist!' });
         }
         // generate "type" filed
         const typeValue = 'reply';

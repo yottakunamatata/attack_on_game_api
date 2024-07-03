@@ -21,7 +21,7 @@ export const getComments = async (req: Request, res: Response) => {
     const contents = await Comment.find({ eventId: eventId });
     // check if comment exist
     if (!contents || contents.length == 0) {
-      return res.status(404).send({ message: 'Comments not found!' });
+      return res.status(202).send({ contents: contents, message: 'Comments not create yet!' });
     }
     // check if Event exist
     const eventExist = await EventModel.findOne({ idNumber: eventId });
@@ -126,7 +126,7 @@ export const createReply = async (req: Request, res: Response) => {
     // check if message Exist
     const messageExist = await Comment.findById(messageId);
     if (!messageExist) {
-      return res.status(404).send({ message: 'Comment not found!' });
+      return res.status(404).send({ message: 'Comment not exist!' });
     }
     // generate "type" filed
     const typeValue = 'reply';
