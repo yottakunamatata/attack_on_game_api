@@ -14,6 +14,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getPics = exports.uploadPic = void 0;
 const firebase_1 = __importDefault(require("../services/firebase"));
+const Store_1 = require("@/models/Store");
+const Player_1 = __importDefault(require("@/models/Player"));
+const EventModel_1 = __importDefault(require("@/models/EventModel"));
 const bucket = firebase_1.default.storage().bucket();
 const uploadPic = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -25,7 +28,8 @@ const uploadPic = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         }
         // check forderName validation
         const validcategory = ['player', 'store', 'event'];
-        if (validcategory.includes(req.params.catagory)) {
+        const catagory = req.params.catagory;
+        if (validcategory.includes(catagory)) {
             // generate related filename
             const originalname = file.originalname;
             const extension = originalname.split('.').pop() || 'jpg';
@@ -37,11 +41,21 @@ const uploadPic = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 blob.getSignedUrl({
                     action: 'read', // 權限
                     expires: '12-31-2500', // 網址的有效期限
-                }, (err, imgUrl) => {
+                }, (err, imgUrl) => __awaiter(void 0, void 0, void 0, function* () {
                     if (err) {
                         return res
                             .status(500)
                             .send({ message: '取得檔案網址失敗', error: err.message });
+                    }
+                    if (catagory === 'player') {
+                        yield Player_1.default.updateOne({ _id: id }, { avatar: imgUrl });
+                    }
+                    else if (catagory === 'store') {
+                        yield Store_1.Store.updateOne({ _id: id }, { avatar: imgUrl });
+                    }
+                    else {
+                        yield EventModel_1.default.updateOne({ idNumber: id }, { eventImageUrl: imgUrl });
+                        const event = yield Store_1.Store.findOne({ idNumber: id });
                     }
                     res.send({
                         success: true,
@@ -49,7 +63,7 @@ const uploadPic = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                         id: id,
                         imgURL: imgUrl,
                     });
-                });
+                }));
             });
             blobStream.on('error', (err) => {
                 res.status(500).send({

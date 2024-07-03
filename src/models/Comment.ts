@@ -3,6 +3,7 @@ import dayjs from '@/utils/dayjs';
 import TIME_FORMATTER from '@/const/TIME_FORMATTER';
 export interface IComment extends Document {
   author: Schema.Types.ObjectId;
+  authorName: string;
   eventId: string;
   storeId: Schema.Types.ObjectId;
   content: string;
@@ -15,6 +16,10 @@ const CommentSchema: Schema = new Schema({
   author: {
     type: Schema.Types.ObjectId,
     ref: 'users',
+    required: true,
+  },
+  authorName: {
+    type: String,
     required: true,
   },
   eventId: {

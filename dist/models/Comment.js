@@ -13,6 +13,10 @@ const CommentSchema = new mongoose_1.Schema({
         ref: 'users',
         required: true,
     },
+    authorName: {
+        type: String,
+        required: true,
+    },
     eventId: {
         type: String,
         ref: 'events',
