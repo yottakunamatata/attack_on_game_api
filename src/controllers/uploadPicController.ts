@@ -3,6 +3,9 @@ import admin from '../services/firebase';
 import multer, { FileFilterCallback } from 'multer';
 import { file } from 'googleapis/build/src/apis/file';
 import firebaseAdmin from '../services/firebase';
+import { Store } from '@/models/Store';
+import Player from '@/models/Player';
+import EventModel from '@/models/EventModel';
 
 const bucket = firebaseAdmin.storage().bucket();
 
@@ -16,7 +19,8 @@ export const uploadPic = async (req: Request, res: Response) => {
     }
     // check forderName validation
     const validcategory = ['player', 'store', 'event'];
-    if (validcategory.includes(req.params.catagory)) {
+    const catagory = req.params.catagory;
+    if (validcategory.includes(catagory)) {
       // generate related filename
       const originalname = file.originalname;
       const extension = originalname.split('.').pop() || 'jpg';
@@ -31,11 +35,22 @@ export const uploadPic = async (req: Request, res: Response) => {
             action: 'read', // 權限
             expires: '12-31-2500', // 網址的有效期限
           },
-          (err, imgUrl) => {
+          async (err, imgUrl) => {
             if (err) {
               return res
                 .status(500)
                 .send({ message: '取得檔案網址失敗', error: err.message });
+            }
+            if (catagory === 'player') {
+              await Player.updateOne({ _id: id }, { avatar: imgUrl });
+            } else if (catagory === 'store') {
+              await Store.updateOne({ _id: id }, { avatar: imgUrl });
+            } else {
+              await EventModel.updateOne(
+                { idNumber: id },
+                { eventImageUrl: imgUrl },
+              );
+              const event = await Store.findOne({ idNumber: id });
             }
             res.send({
               success: true,

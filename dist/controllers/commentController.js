@@ -74,7 +74,7 @@ const createComment = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         if (!userExist) {
             return res.status(404).send({ message: 'User not found!' });
         }
-        // check if Player exist 
+        // check if Player exist
         const playerExist = yield Player_1.default.findOne({ user: author });
         if (!playerExist) {
             return res.status(404).send({ message: 'Player not found!' });

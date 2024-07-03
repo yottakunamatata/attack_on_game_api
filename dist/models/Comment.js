@@ -15,7 +15,7 @@ const CommentSchema = new mongoose_1.Schema({
     },
     authorName: {
         type: String,
-        required: true
+        required: true,
     },
     eventId: {
         type: String,

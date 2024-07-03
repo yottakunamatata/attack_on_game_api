@@ -62,7 +62,7 @@ export const createComment = async (req: Request, res: Response) => {
     if (!userExist) {
       return res.status(404).send({ message: 'User not found!' });
     }
-    // check if Player exist 
+    // check if Player exist
     const playerExist = await Player.findOne({ user: author });
     if (!playerExist) {
       return res.status(404).send({ message: 'Player not found!' });
@@ -83,7 +83,7 @@ export const createComment = async (req: Request, res: Response) => {
     const massageExist = null;
     const storeId = null;
     const player = await Player.findOne({ user: author });
-    const authorName = player?.name
+    const authorName = player?.name;
     const comment = await Comment.create({
       author,
       authorName: authorName,
@@ -146,7 +146,7 @@ export const createReply = async (req: Request, res: Response) => {
     // generate "type" filed
     const store = await Store.findOne({ user: author });
     const storeId = store?._id;
-    const authorName = store?.name
+    const authorName = store?.name;
     const typeValue = 'reply';
     const comment = await Comment.create({
       author,

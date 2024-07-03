@@ -20,7 +20,7 @@ const CommentSchema: Schema = new Schema({
   },
   authorName: {
     type: String,
-    required: true
+    required: true,
   },
   eventId: {
     type: String,
