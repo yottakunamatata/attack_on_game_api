@@ -21,7 +21,7 @@ export const uploadPic = async (req: Request, res: Response) => {
       const originalname = file.originalname;
       const extension = originalname.split('.').pop() || 'jpg';
       const filename = `${req.params.id}.${extension}`;
-      const id = req.params.id
+      const id = req.params.id;
       const blob = bucket.file(`${req.params.catagory}/${filename}`);
       const blobStream = blob.createWriteStream();
 
@@ -82,7 +82,7 @@ export const getPics = async (req: Request, res: Response) => {
             action: 'read',
             expires: '12-31-2500',
           });
-          console.log(file.name)
+          console.log(file.name);
           fileList.push({
             fileName: file.name,
             imgUrl: fileUrl,

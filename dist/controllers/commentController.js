@@ -34,7 +34,9 @@ const getComments = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         const contents = yield Comment_1.Comment.find({ eventId: eventId });
         // check if comment exist
         if (!contents || contents.length == 0) {
-            return res.status(202).send({ contents: contents, message: 'Comments not create yet!' });
+            return res
+                .status(202)
+                .send({ contents: contents, message: 'Comments not create yet!' });
         }
         // check if Event exist
         const eventExist = yield EventModel_1.default.findOne({ idNumber: eventId });
