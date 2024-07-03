@@ -7,6 +7,8 @@ import EventModel from '@/models/EventModel';
 import { Store } from '@/models/Store';
 import dayjs from '@/utils/dayjs';
 import TIME_FORMATTER from '@/const/TIME_FORMATTER';
+import { get } from 'lodash';
+import Player from '@/models/Player';
 // GET 取得活動留言板資訊 - Create comment & GET comment?
 
 export const getComments = async (req: Request, res: Response) => {
@@ -53,11 +55,17 @@ export const createComment = async (req: Request, res: Response) => {
   try {
     const { content } = req.body;
     const author = getUser(req)._id;
+    const userRole = getUser(req).role;
     const eventId = req.params.eventId;
     // check if User exist
     const userExist = await User.findById(author);
     if (!userExist) {
       return res.status(404).send({ message: 'User not found!' });
+    }
+    // check if Player exist 
+    const playerExist = await Player.findOne({ user: author });
+    if (!playerExist) {
+      return res.status(404).send({ message: 'Player not found!' });
     }
     // check if Event exist
     const eventExist = await EventModel.findOne({ idNumber: eventId });
@@ -65,8 +73,7 @@ export const createComment = async (req: Request, res: Response) => {
       return res.status(404).send({ message: 'Event not found!' });
     }
     // checke if role of user is "player"
-    const userRole = await User.findById(author);
-    if (userRole?.role !== 'player') {
+    if (userRole !== 'player') {
       return res
         .status(404)
         .send({ message: 'The role of user is not player!' });
@@ -75,8 +82,11 @@ export const createComment = async (req: Request, res: Response) => {
     const typeValue = 'Comment';
     const massageExist = null;
     const storeId = null;
+    const player = await Player.findOne({ user: author });
+    const authorName = player?.name
     const comment = await Comment.create({
       author,
+      authorName: authorName,
       eventId,
       storeId: storeId,
       content,
@@ -105,8 +115,6 @@ export const createReply = async (req: Request, res: Response) => {
     const author = getUser(req)._id;
     const eventId = req.params.eventId;
     const messageId = req.params.messageId;
-    const store = await Store.findOne({ user: author });
-    const storeId = store?._id;
     // check if User exist
     const userExist = await User.findById(author);
     if (!userExist) {
@@ -116,6 +124,11 @@ export const createReply = async (req: Request, res: Response) => {
     const eventExist = await EventModel.findOne({ idNumber: eventId });
     if (!eventExist) {
       return res.status(404).send({ message: 'Event not found!' });
+    }
+    // check if Store exist
+    const storeExist = await Store.findOne({ user: author });
+    if (!storeExist) {
+      return res.status(404).send({ message: 'Store not found!' });
     }
     // check if role of user is "store"
     const userRole = await User.findById(author);
@@ -131,9 +144,13 @@ export const createReply = async (req: Request, res: Response) => {
       return res.status(404).send({ message: 'Comment not exist!' });
     }
     // generate "type" filed
+    const store = await Store.findOne({ user: author });
+    const storeId = store?._id;
+    const authorName = store?.name
     const typeValue = 'reply';
     const comment = await Comment.create({
       author,
+      authorName: authorName,
       eventId,
       storeId: storeId,
       content,
