@@ -30,6 +30,7 @@ const uploadPic = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             const originalname = file.originalname;
             const extension = originalname.split('.').pop() || 'jpg';
             const filename = `${req.params.id}.${extension}`;
+            const id = req.params.id;
             const blob = bucket.file(`${req.params.catagory}/${filename}`);
             const blobStream = blob.createWriteStream();
             blobStream.on('finish', () => {
@@ -45,6 +46,7 @@ const uploadPic = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                     res.send({
                         success: true,
                         message: '圖片上傳成功',
+                        id: id,
                         imgURL: imgUrl,
                     });
                 });
@@ -85,6 +87,7 @@ const getPics = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                     action: 'read',
                     expires: '12-31-2500',
                 });
+                console.log(file.name);
                 fileList.push({
                     fileName: file.name,
                     imgUrl: fileUrl,
