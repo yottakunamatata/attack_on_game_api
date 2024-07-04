@@ -47,14 +47,14 @@ const uploadPic = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                             .status(500)
                             .send({ message: '取得檔案網址失敗', error: err.message });
                     }
-                    if (catagory === 'player') {
-                        yield Player_1.default.updateOne({ _id: id }, { avatar: imgUrl });
+                    if (catagory === "player") {
+                        yield Player_1.default.updateOne({ user: id }, { avatar: imgUrl });
                     }
-                    else if (catagory === 'store') {
+                    else if (catagory === "store") {
                         yield Store_1.Store.updateOne({ _id: id }, { avatar: imgUrl });
                     }
                     else {
-                        yield EventModel_1.default.updateOne({ idNumber: id }, { eventImageUrl: [imgUrl] });
+                        yield EventModel_1.default.updateOne({ idNumber: id }, { eventImageUrl: imgUrl });
                         const event = yield Store_1.Store.findOne({ idNumber: id });
                     }
                     res.send({

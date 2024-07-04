@@ -96,9 +96,11 @@ const createComment = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         const storeId = null;
         const player = yield Player_1.default.findOne({ user: author });
         const authorName = player === null || player === void 0 ? void 0 : player.name;
+        const avatar = player === null || player === void 0 ? void 0 : player.avatar;
         const comment = yield Comment_1.Comment.create({
             author,
             authorName: authorName,
+            avatar: avatar,
             eventId,
             storeId: storeId,
             content,
@@ -158,10 +160,17 @@ const createReply = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         const store = yield Store_1.Store.findOne({ user: author });
         const storeId = store === null || store === void 0 ? void 0 : store._id;
         const authorName = store === null || store === void 0 ? void 0 : store.name;
+        const avatar = store === null || store === void 0 ? void 0 : store.avatar;
         const typeValue = 'reply';
+        // check the event belong to store or not
+        const checkEventBelongStore = yield EventModel_1.default.findOne({ storeId: storeId });
+        if (eventId !== (checkEventBelongStore === null || checkEventBelongStore === void 0 ? void 0 : checkEventBelongStore.idNumber)) {
+            return res.status(404).send({ message: 'The event not belong to your store!' });
+        }
         const comment = yield Comment_1.Comment.create({
             author,
             authorName: authorName,
+            avatar: avatar,
             eventId,
             storeId: storeId,
             content,
