@@ -29,6 +29,10 @@ const CommentSchema = new mongoose_1.Schema({
         type: mongoose_1.Schema.Types.ObjectId,
         ref: 'stores',
     },
+    storeName: {
+        type: String,
+        ref: 'stores',
+    },
     content: { type: String, require: true },
     createdAt: { type: String, default: (0, dayjs_1.default)().format(TIME_FORMATTER_1.default) },
     type: { type: String, require: true },

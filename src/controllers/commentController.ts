@@ -140,7 +140,6 @@ export const createReply = async (req: Request, res: Response) => {
         .status(404)
         .send({ message: 'The role of user is not store!' });
     }
-
     // check if message Exist
     const messageExist = await Comment.findById(messageId);
     if (!messageExist) {
@@ -152,6 +151,11 @@ export const createReply = async (req: Request, res: Response) => {
     const authorName = store?.name;
     const avatar = store?.avatar;
     const typeValue = 'reply';
+    // check the event belong to store or not
+    const checkEventBelongStore = await EventModel.findOne({ storeId: storeId })
+    if (eventId !== checkEventBelongStore?.idNumber) {
+      return res.status(404).send({ message: 'The event not belong to your store!' });
+    }
     const comment = await Comment.create({
       author,
       authorName: authorName,
