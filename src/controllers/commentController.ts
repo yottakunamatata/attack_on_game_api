@@ -9,6 +9,7 @@ import dayjs from '@/utils/dayjs';
 import TIME_FORMATTER from '@/const/TIME_FORMATTER';
 import { get } from 'lodash';
 import Player from '@/models/Player';
+
 // GET 取得活動留言板資訊 - Create comment & GET comment?
 
 export const getComments = async (req: Request, res: Response) => {
@@ -84,9 +85,11 @@ export const createComment = async (req: Request, res: Response) => {
     const storeId = null;
     const player = await Player.findOne({ user: author });
     const authorName = player?.name;
+    const avatar = player?.avatar
     const comment = await Comment.create({
       author,
       authorName: authorName,
+      avatar: avatar,
       eventId,
       storeId: storeId,
       content,
@@ -147,10 +150,12 @@ export const createReply = async (req: Request, res: Response) => {
     const store = await Store.findOne({ user: author });
     const storeId = store?._id;
     const authorName = store?.name;
+    const avatar = store?.avatar;
     const typeValue = 'reply';
     const comment = await Comment.create({
       author,
       authorName: authorName,
+      avatar: avatar,
       eventId,
       storeId: storeId,
       content,
