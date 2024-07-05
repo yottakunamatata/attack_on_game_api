@@ -152,12 +152,13 @@ export const createReply = async (req: Request, res: Response) => {
     const avatar = store?.avatar;
     const typeValue = 'reply';
     // check the event belong to store or not
-    const checkEventBelongStore = await EventModel.findOne({
+    const EventBelongStore = await EventModel.find({
       storeId: storeId,
     });
-    console.log(storeId)
-    console.log(checkEventBelongStore)
-    if (eventId !== checkEventBelongStore?.idNumber) {
+    const EventBelongStoreList = EventBelongStore.map(
+      (event) => event.idNumber,
+    );
+    if (!EventBelongStoreList.includes(eventId)) {
       return res
         .status(404)
         .send({ message: 'The event not belong to your store!' });

@@ -163,12 +163,11 @@ const createReply = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         const avatar = store === null || store === void 0 ? void 0 : store.avatar;
         const typeValue = 'reply';
         // check the event belong to store or not
-        const checkEventBelongStore = yield EventModel_1.default.findOne({
+        const EventBelongStore = yield EventModel_1.default.find({
             storeId: storeId,
         });
-        console.log(storeId);
-        console.log(checkEventBelongStore);
-        if (eventId !== (checkEventBelongStore === null || checkEventBelongStore === void 0 ? void 0 : checkEventBelongStore.idNumber)) {
+        const EventBelongStoreList = EventBelongStore.map((event) => event.idNumber);
+        if (!EventBelongStoreList.includes(eventId)) {
             return res
                 .status(404)
                 .send({ message: 'The event not belong to your store!' });
