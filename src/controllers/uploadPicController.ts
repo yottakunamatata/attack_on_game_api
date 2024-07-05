@@ -19,7 +19,7 @@ export const uploadPic = async (req: Request, res: Response) => {
     }
     // check forderName validation
     const validcategory = ['player', 'store', 'event'];
-    const catagory = req.params.catagory
+    const catagory = req.params.catagory;
     if (validcategory.includes(catagory)) {
       // generate related filename
       const originalname = file.originalname;
@@ -41,13 +41,16 @@ export const uploadPic = async (req: Request, res: Response) => {
                 .status(500)
                 .send({ message: '取得檔案網址失敗', error: err.message });
             }
-            if (catagory === "player") {
-              await Player.updateOne({ user: id }, { avatar: imgUrl })
-            } else if (catagory === "store") {
-              await Store.updateOne({ _id: id }, { avatar: imgUrl })
+            if (catagory === 'player') {
+              await Player.updateOne({ user: id }, { avatar: imgUrl });
+            } else if (catagory === 'store') {
+              await Store.updateOne({ _id: id }, { avatar: imgUrl });
             } else {
-              await EventModel.updateOne({ idNumber: id }, { eventImageUrl: imgUrl })
-              const event = await Store.findOne({ idNumber: id })
+              await EventModel.updateOne(
+                { idNumber: id },
+                { eventImageUrl: imgUrl },
+              );
+              const event = await Store.findOne({ idNumber: id });
             }
             res.send({
               success: true,

@@ -85,7 +85,7 @@ export const createComment = async (req: Request, res: Response) => {
     const storeId = null;
     const player = await Player.findOne({ user: author });
     const authorName = player?.name;
-    const avatar = player?.avatar
+    const avatar = player?.avatar;
     const comment = await Comment.create({
       author,
       authorName: authorName,
@@ -152,9 +152,15 @@ export const createReply = async (req: Request, res: Response) => {
     const avatar = store?.avatar;
     const typeValue = 'reply';
     // check the event belong to store or not
-    const checkEventBelongStore = await EventModel.findOne({ storeId: storeId })
+    const checkEventBelongStore = await EventModel.findOne({
+      storeId: storeId,
+    });
+    console.log(storeId)
+    console.log(checkEventBelongStore)
     if (eventId !== checkEventBelongStore?.idNumber) {
-      return res.status(404).send({ message: 'The event not belong to your store!' });
+      return res
+        .status(404)
+        .send({ message: 'The event not belong to your store!' });
     }
     const comment = await Comment.create({
       author,
