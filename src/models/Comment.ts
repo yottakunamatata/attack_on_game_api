@@ -25,7 +25,7 @@ const CommentSchema: Schema = new Schema({
     required: true,
   },
   avatar: {
-    type: String
+    type: String,
   },
   eventId: {
     type: String,
