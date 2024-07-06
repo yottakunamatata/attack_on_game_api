@@ -48,14 +48,28 @@ const uploadPic = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                             .send({ message: '取得檔案網址失敗', error: err.message });
                     }
                     if (catagory === 'player') {
+                        // check if player exist
+                        const playerExist = yield Player_1.default.findById(id);
+                        if (!playerExist) {
+                            return res.status(404).send({ message: 'player not found' });
+                        }
                         yield Player_1.default.updateOne({ user: id }, { avatar: imgUrl });
                     }
                     else if (catagory === 'store') {
+                        // check if store exist
+                        const storeExist = yield Store_1.Store.findById(id);
+                        if (!storeExist) {
+                            return res.status(404).send({ message: 'store not found' });
+                        }
                         yield Store_1.Store.updateOne({ _id: id }, { avatar: imgUrl });
                     }
-                    else {
+                    else if (catagory === 'event') {
+                        // check if event exist
+                        const eventExist = yield EventModel_1.default.findOne({ idNumber: id });
+                        if (!eventExist) {
+                            return res.status(404).send({ message: 'store not found' });
+                        }
                         yield EventModel_1.default.updateOne({ idNumber: id }, { eventImageUrl: imgUrl });
-                        const event = yield Store_1.Store.findOne({ idNumber: id });
                     }
                     res.send({
                         success: true,

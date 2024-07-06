@@ -42,15 +42,30 @@ export const uploadPic = async (req: Request, res: Response) => {
                 .send({ message: '取得檔案網址失敗', error: err.message });
             }
             if (catagory === 'player') {
+              // check if player exist
+              const playerExist = await Player.findById(id);
+              if (!playerExist) {
+                return res.status(404).send({ message: 'player not found' });
+              }
               await Player.updateOne({ user: id }, { avatar: imgUrl });
             } else if (catagory === 'store') {
+              // check if store exist
+              const storeExist = await Store.findById(id);
+              if (!storeExist) {
+                return res.status(404).send({ message: 'store not found' });
+              }
               await Store.updateOne({ _id: id }, { avatar: imgUrl });
-            } else {
+
+            } else if (catagory === 'event') {
+              // check if event exist
+              const eventExist = await EventModel.findOne({ idNumber: id });
+              if (!eventExist) {
+                return res.status(404).send({ message: 'store not found' });
+              }
               await EventModel.updateOne(
                 { idNumber: id },
                 { eventImageUrl: imgUrl },
               );
-              const event = await Store.findOne({ idNumber: id });
             }
             res.send({
               success: true,
