@@ -6,6 +6,7 @@ import firebaseAdmin from '../services/firebase';
 import { Store } from '@/models/Store';
 import Player from '@/models/Player';
 import EventModel from '@/models/EventModel';
+import { Comment } from '@/models/Comment'
 
 const bucket = firebaseAdmin.storage().bucket();
 
@@ -23,7 +24,7 @@ export const uploadPic = async (req: Request, res: Response) => {
     if (validcategory.includes(catagory)) {
       // generate related filename
       const originalname = file.originalname;
-      const extension = originalname.split('.').pop() || 'jpg';
+      const extension = 'jpg';
       const filename = `${req.params.id}.${extension}`;
       const id = req.params.id;
       const blob = bucket.file(`${req.params.catagory}/${filename}`);
@@ -43,25 +44,31 @@ export const uploadPic = async (req: Request, res: Response) => {
             }
             if (catagory === 'player') {
               // check if player exist
-              const playerExist = await Player.findById(id);
+              const playerExist = await Player.findOne({ user: id });
               if (!playerExist) {
                 return res.status(404).send({ message: 'player not found' });
               }
+              // update player DB
               await Player.updateOne({ user: id }, { avatar: imgUrl });
+              // update Comment DB
+              const CommentUpdate = await Comment.updateMany({ author: id }, { $set: { avatar: imgUrl } })
             } else if (catagory === 'store') {
               // check if store exist
-              const storeExist = await Store.findById(id);
+              const storeExist = await Store.findOne({ user: id });
               if (!storeExist) {
                 return res.status(404).send({ message: 'store not found' });
               }
-              await Store.updateOne({ _id: id }, { avatar: imgUrl });
-
+              // update store DB
+              await Store.updateOne({ user: id }, { avatar: imgUrl });
+              // update Comment DB
+              const CommentUpdate = await Comment.updateMany({ author: id }, { $set: { avatar: imgUrl } })
             } else if (catagory === 'event') {
               // check if event exist
               const eventExist = await EventModel.findOne({ idNumber: id });
               if (!eventExist) {
                 return res.status(404).send({ message: 'store not found' });
               }
+              // update event DB
               await EventModel.updateOne(
                 { idNumber: id },
                 { eventImageUrl: imgUrl },
@@ -89,7 +96,6 @@ export const uploadPic = async (req: Request, res: Response) => {
       return res.status(500).send({ message: 'Route輸入格式錯誤' });
     }
   } catch (error) {
-    res.status(500).send({ message: 'Error image uploading.', error: error });
   }
 };
 
