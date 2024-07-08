@@ -67,9 +67,6 @@ export class EventService {
     const findEvent = await this.eventRepository.findById(
       queryParams.params.id,
     );
-    console.log('findEvent', findEvent);
-    console.log('store', store);
-    console.log('queryParams.params.id', queryParams.params.id);
     if (store._id.toString() === findEvent.storeId.toString()) {
       const updateContent = {
         _id: findEvent._id,

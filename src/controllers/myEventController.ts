@@ -27,6 +27,13 @@ export class MyEventController
       ResponseType.SUCCESS_REQUEST,
     );
   };
+  public getTicketById = async (req: Request): Promise<ResponseDTO> => {
+    return this.handleServiceResponse(
+      () => this.eventService.getTicketByEventId(req),
+      ResponseType.SUCCESS_REQUEST,
+    );
+  };
+
   // public deletUser = async (req: Request): Promise<ResponseDTO> => {
   //   return this.handleServiceResponse(
   //     () => this.eventService.deletUser(req),
