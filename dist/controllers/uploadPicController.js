@@ -100,8 +100,7 @@ const uploadPic = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             return res.status(500).send({ message: 'Route輸入格式錯誤' });
         }
     }
-    catch (error) {
-    }
+    catch (error) { }
 });
 exports.uploadPic = uploadPic;
 // 取得檔案夾內圖片
@@ -122,7 +121,6 @@ const getPics = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                     action: 'read',
                     expires: '12-31-2500',
                 });
-                console.log(file.name);
                 fileList.push({
                     fileName: file.name,
                     imgUrl: fileUrl,
