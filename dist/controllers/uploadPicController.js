@@ -18,6 +18,7 @@ const Store_1 = require("@/models/Store");
 const Player_1 = __importDefault(require("@/models/Player"));
 const EventModel_1 = __importDefault(require("@/models/EventModel"));
 const Comment_1 = require("@/models/Comment");
+const User_1 = __importDefault(require("@/models/User"));
 const bucket = firebase_1.default.storage().bucket();
 const uploadPic = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -49,10 +50,10 @@ const uploadPic = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                             .send({ message: '取得檔案網址失敗', error: err.message });
                     }
                     if (catagory === 'player') {
-                        // check if player exist
-                        const playerExist = yield Player_1.default.findOne({ user: id });
-                        if (!playerExist) {
-                            return res.status(404).send({ message: 'player not found' });
+                        // check if user exist
+                        const userExist = yield User_1.default.findOne({ _id: id });
+                        if (!userExist) {
+                            return res.status(404).send({ message: 'user not found' });
                         }
                         // update player DB
                         yield Player_1.default.updateOne({ user: id }, { avatar: imgUrl });
@@ -60,10 +61,10 @@ const uploadPic = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                         const CommentUpdate = yield Comment_1.Comment.updateMany({ author: id }, { $set: { avatar: imgUrl } });
                     }
                     else if (catagory === 'store') {
-                        // check if store exist
-                        const storeExist = yield Store_1.Store.findOne({ user: id });
-                        if (!storeExist) {
-                            return res.status(404).send({ message: 'store not found' });
+                        // check if user exist
+                        const userExist = yield User_1.default.findOne({ _id: id });
+                        if (!userExist) {
+                            return res.status(404).send({ message: 'user not found' });
                         }
                         // update store DB
                         yield Store_1.Store.updateOne({ user: id }, { avatar: imgUrl });

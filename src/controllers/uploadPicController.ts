@@ -7,6 +7,7 @@ import { Store } from '@/models/Store';
 import Player from '@/models/Player';
 import EventModel from '@/models/EventModel';
 import { Comment } from '@/models/Comment';
+import User from '@/models/User'
 
 const bucket = firebaseAdmin.storage().bucket();
 
@@ -43,10 +44,10 @@ export const uploadPic = async (req: Request, res: Response) => {
                 .send({ message: '取得檔案網址失敗', error: err.message });
             }
             if (catagory === 'player') {
-              // check if player exist
-              const playerExist = await Player.findOne({ user: id });
-              if (!playerExist) {
-                return res.status(404).send({ message: 'player not found' });
+              // check if user exist
+              const userExist = await User.findOne({ _id: id });
+              if (!userExist) {
+                return res.status(404).send({ message: 'user not found' });
               }
               // update player DB
               await Player.updateOne({ user: id }, { avatar: imgUrl });
@@ -56,10 +57,10 @@ export const uploadPic = async (req: Request, res: Response) => {
                 { $set: { avatar: imgUrl } },
               );
             } else if (catagory === 'store') {
-              // check if store exist
-              const storeExist = await Store.findOne({ user: id });
-              if (!storeExist) {
-                return res.status(404).send({ message: 'store not found' });
+              // check if user exist
+              const userExist = await User.findOne({ _id: id });
+              if (!userExist) {
+                return res.status(404).send({ message: 'user not found' });
               }
               // update store DB
               await Store.updateOne({ user: id }, { avatar: imgUrl });
