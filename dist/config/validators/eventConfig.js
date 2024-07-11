@@ -112,7 +112,7 @@ exports.validationConfig = {
             (0, express_validator_1.body)('participationFee')
                 .notEmpty()
                 .withMessage('參與費用不能為空哦！')
-                .isInt({ min: 0 })
+                .isInt({ min: 1 })
                 .withMessage('參與費用必須是一個非負數哦！'),
         ],
         eventImageUrl: [
@@ -137,7 +137,7 @@ exports.validationConfig = {
                 .optional()
                 .isInt({ min: 1, max: Number(EventRequest_1.DefaultQuery.MAX_LIMIT) })
                 .toInt()
-                .withMessage('請輸入有效的最小參與人數！'),
+                .withMessage('請輸入有效的返回筆數！'),
         ],
         skip: [
             (0, express_validator_1.query)('skip')

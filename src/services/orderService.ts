@@ -55,11 +55,7 @@ export class OrderService {
 
     const order = await this.createOrder(orderDTO);
     await this.updateEventParticipants(event, orderDTO);
-    await this.createTickets(
-      order._id,
-      player.user,
-      orderDTO.registrationCount,
-    );
+    await this.createTickets(order._id, player._id, orderDTO.registrationCount);
 
     return order;
   }
@@ -69,7 +65,7 @@ export class OrderService {
     const order = await this.lookupService.findOrder(
       queryParams.params.orderId,
     );
-    if (order.playerId.toString() !== player.user.toString()) {
+    if (order.playerId.toString() !== player._id.toString()) {
       throw new CustomError(
         CustomResponseType.VALIDATION_ERROR,
         OrderResponseType.FAILED_AUTHORIZATION,
@@ -99,7 +95,7 @@ export class OrderService {
     }
     const ticketList = await this.lookupService.findTickets(
       order.id,
-      player.user,
+      player._id,
     );
     const targetTicketsDTO = ticketList.map((ticket) =>
       new TicketDTO(ticket).toDetailDTO(),
@@ -114,7 +110,7 @@ export class OrderService {
   async getAll(queryParams: Request): Promise<OrderListDTO[]> {
     const player = await this.findPlayer(queryParams);
     const { limit, status, skip } = queryParams.query as IQuery;
-    const orderList = await this.lookupService.findOrderList(player.user, {
+    const orderList = await this.lookupService.findOrderList(player._id, {
       limit,
       status,
       skip,
@@ -222,7 +218,7 @@ export class OrderService {
     return new OrderDTO({
       ...body,
       eventId: event._id,
-      playerId: player.user,
+      playerId: player._id,
     });
   }
 

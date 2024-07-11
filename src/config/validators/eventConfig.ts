@@ -151,7 +151,7 @@ export const validationConfig: {
       body('participationFee')
         .notEmpty()
         .withMessage('參與費用不能為空哦！')
-        .isInt({ min: 0 })
+        .isInt({ min: 1 })
         .withMessage('參與費用必須是一個非負數哦！'),
     ],
     eventImageUrl: [
@@ -176,7 +176,7 @@ export const validationConfig: {
         .optional()
         .isInt({ min: 1, max: Number(DefaultQuery.MAX_LIMIT) })
         .toInt()
-        .withMessage('請輸入有效的最小參與人數！'),
+        .withMessage('請輸入有效的返回筆數！'),
     ],
     skip: [
       query('skip')
