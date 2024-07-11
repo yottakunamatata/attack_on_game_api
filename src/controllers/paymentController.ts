@@ -31,7 +31,7 @@ export const getPaymetData = async (req: Request, res: Response) => {
       Version: config.Version,
       RespondType: 'JSON',
       ItemDesc: orderObj.eventId.title,
-      Email: orderObj.email,
+      Email: 'eagle163013@gmail.com',
       ClientBackURL: config.FrontEndUrl,
       NotifyURL: config.NotifyUrl,
       OrderComment: orderObj.notes,
