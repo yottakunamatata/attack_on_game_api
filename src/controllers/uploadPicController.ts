@@ -7,7 +7,7 @@ import { Store } from '@/models/Store';
 import Player from '@/models/Player';
 import EventModel from '@/models/EventModel';
 import { Comment } from '@/models/Comment';
-import User from '@/models/User'
+import User from '@/models/User';
 
 const bucket = firebaseAdmin.storage().bucket();
 
