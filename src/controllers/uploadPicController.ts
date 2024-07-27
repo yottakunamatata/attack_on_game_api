@@ -44,11 +44,6 @@ export const uploadPic = async (req: Request, res: Response) => {
                 .send({ message: '取得檔案網址失敗', error: err.message });
             }
             if (catagory === 'player') {
-              // check if user exist
-              const userExist = await User.findOne({ _id: id });
-              if (!userExist) {
-                return res.status(404).send({ message: 'user not found' });
-              }
               // update player DB
               await Player.updateOne({ user: id }, { avatar: imgUrl });
               // update Comment DB
@@ -57,11 +52,6 @@ export const uploadPic = async (req: Request, res: Response) => {
                 { $set: { avatar: imgUrl } },
               );
             } else if (catagory === 'store') {
-              // check if user exist
-              const userExist = await User.findOne({ _id: id });
-              if (!userExist) {
-                return res.status(404).send({ message: 'user not found' });
-              }
               // update store DB
               await Store.updateOne({ user: id }, { avatar: imgUrl });
               // update Comment DB
@@ -70,11 +60,6 @@ export const uploadPic = async (req: Request, res: Response) => {
                 { $set: { avatar: imgUrl } },
               );
             } else if (catagory === 'event') {
-              // check if event exist
-              const eventExist = await EventModel.findOne({ idNumber: id });
-              if (!eventExist) {
-                return res.status(404).send({ message: 'store not found' });
-              }
               // update event DB
               await EventModel.updateOne(
                 { idNumber: id },
